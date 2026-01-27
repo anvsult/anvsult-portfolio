@@ -2,6 +2,7 @@ import { getLocale } from 'next-intl/server';
 import { prisma } from '@/lib/db';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { SkillCard } from '@/components/portfolio/SkillCard';
+import { ModeToggle } from '@/components/ui/mode-toggle';
 
 export default async function LandingPage() {
   const locale = await getLocale();
@@ -31,6 +32,7 @@ export default async function LandingPage() {
             ? 'Software Development Student @ Champlain College' 
             : 'Étudiant en Développement Logiciel @ Collège Champlain'}
         </p>
+        <ModeToggle />
       </section>
 
       {/* Projects Grid */}
