@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Briefcase, Code, MessageSquare, Star } from "lucide-react";
+import { LayoutDashboard, Briefcase, Code, MessageSquare, Star, Heart, History } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -11,8 +11,10 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     { href: "/admin", icon: <LayoutDashboard size={18} />, label: "Dashboard" },
     { href: "/admin/projects", icon: <Briefcase size={18} />, label: "Projects" },
     { href: "/admin/skills", icon: <Code size={18} />, label: "Skills" },
+    { href: "/admin/experience", icon: <History size={18} />, label: "Experience" },
     { href: "/admin/testimonials", icon: <Star size={18} />, label: "Testimonials" },
     { href: "/admin/messages", icon: <MessageSquare size={18} />, label: "Messages" },
+    { href: "/admin/hobbies", icon: <Heart size={18} />, label: "Hobbies" },
   ];
 
   const supabase = await createClient();

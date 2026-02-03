@@ -39,8 +39,8 @@ model Skill {
   updatedAt   DateTime @updatedAt
 }
 
-// 3. WORK EXPERIENCE: Professional experience
-model WorkExperience {
+// 3. EXPERIENCE: Professional experience
+model Experience {
   id            String   @id @default(cuid())
   companyEn     String
   companyFr     String
@@ -52,6 +52,7 @@ model WorkExperience {
   endDate       DateTime? // null = current job
   location      String?
   companyLogo   String?
+  technologies  String[]
   order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -115,18 +116,12 @@ model Testimonial {
   id             String    @id @default(cuid())
   authorName     String
   authorRole     String?
-  authorImageUrl String?
   contentEn      String    @db.Text
   contentFr      String    @db.Text
   
   // Approval workflow
   isApproved     Boolean   @default(false)
-  adminNotes     String?   @db.Text
-  rejectedReason String?   @db.Text
-  reviewedAt     DateTime?
-  
   createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
 }
 
 // 9. USER: Admin authentication
