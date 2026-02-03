@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { SkillCard } from '@/components/portfolio/SkillCard';
 import { ModeToggle } from '@/components/ui/mode-toggle';
+import { ContactForm } from '@/components/portfolio/ContactForm';
 
 export default async function LandingPage() {
   const locale = await getLocale();
@@ -87,6 +88,14 @@ export default async function LandingPage() {
           )}
         </div>
       </section>
+
+      {/* Contact Section */}
+      <section className="mt-32 max-w-2xl mx-auto">
+      <h2 className="text-3xl font-bold mb-8 text-center">
+        {locale === 'en' ? 'Get in Touch' : 'Contactez-moi'}
+      </h2>
+      <ContactForm />
+    </section>
     </main>
   );
 }

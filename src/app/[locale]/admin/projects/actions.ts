@@ -13,6 +13,7 @@ export async function createProject(formData: FormData) {
   const techStackString = formData.get("techStack") as string;
   const githubLink = formData.get("githubLink") as string;
   const liveLink = formData.get("liveLink") as string;
+  const isFeatured = formData.get("isFeatured") === "on";
 
   // Basic validation
   if (!titleEn || !titleFr) throw new Error("Titles are required");
@@ -28,6 +29,7 @@ export async function createProject(formData: FormData) {
       techStack: techStackString.split(",").map(s => s.trim()), // "React, Next" -> ["React", "Next"]
       githubLink,
       liveLink,
+      isFeatured,
     },
   });
 
@@ -35,5 +37,11 @@ export async function createProject(formData: FormData) {
   revalidatePath("/[locale]/admin/projects", "layout");
   revalidatePath("/[locale]/projects", "layout");
   
-  redirect("/admin/projects");
+  redirect("/[locale]/admin/projects");
+}
+
+export async function deleteProject(id: string) {
+  await prisma.project.delete({ where: { id } });
+  revalidatePath("/[locale]/admin/projects", "layout");
+  revalidatePath("/[locale]/projects", "layout");
 }

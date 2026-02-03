@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PlusCircle, Pencil, Trash2 } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import Link from "next/link";
+import { ProjectActions } from "./ProjectActions";
 
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
@@ -35,10 +36,7 @@ export default async function AdminProjectsPage() {
                 <CardTitle className="text-lg">{project.titleEn}</CardTitle>
                 <CardDescription>{project.techStack.join(", ")}</CardDescription>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="icon"><Pencil size={16} /></Button>
-                <Button variant="destructive" size="icon"><Trash2 size={16} /></Button>
-              </div>
+              <ProjectActions projectId={project.id} projectTitle={project.titleEn} />
             </Card>
           ))
         )}

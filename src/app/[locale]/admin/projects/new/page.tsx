@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function NewProjectPage() {
   return (
@@ -61,6 +62,21 @@ export default function NewProjectPage() {
               <Label htmlFor="liveLink">Live Site URL</Label>
               <Input id="liveLink" name="liveLink" type="url" />
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Featured Checkbox */}
+        <Card className="mt-8">
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-3">
+              <Checkbox id="isFeatured" name="isFeatured" />
+              <Label htmlFor="isFeatured" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
+                Feature this project on homepage
+              </Label>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2 ml-7">
+              Featured projects will be prominently displayed on the main portfolio page
+            </p>
           </CardContent>
         </Card>
 
