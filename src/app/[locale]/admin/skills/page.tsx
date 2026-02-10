@@ -2,7 +2,8 @@ import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { createSkill } from "./actions";
+import { Trash2 } from "lucide-react";
+import { createSkill, deleteSkill } from "./actions";
 
 export default async function AdminSkillsPage() {
   const skills = await prisma.skill.findMany({
@@ -26,10 +27,6 @@ export default async function AdminSkillsPage() {
               <Input name="nameFr" placeholder="TypeScript" required />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Proficiency (%)</label>
-              <Input name="proficiency" type="number" min={0} max={100} placeholder="80" required />
-            </div>
-            <div className="space-y-2">
               <label className="text-sm font-medium">Category</label>
               <select name="category" className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm">
                 <option value="Frontend">Frontend</option>
@@ -43,15 +40,23 @@ export default async function AdminSkillsPage() {
       </Card>
 
       {/* Skills Table/List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {skills.map(skill => (
-          <Card key={skill.id} className="p-4 flex justify-between items-center">
+          <div
+            key={skill.id}
+            className="flex items-center justify-between gap-3 rounded-md border bg-card/50 px-3 py-2"
+          >
             <div>
-              <p className="font-semibold">{skill.nameEn}</p>
-              <p className="text-xs text-muted-foreground">{skill.category}</p>
+              <p className="text-sm font-semibold">{skill.nameEn}</p>
+              <p className="text-[11px] text-muted-foreground">{skill.category}</p>
             </div>
-            <div className="text-primary font-bold">{skill.proficiency}%</div>
-          </Card>
+            <form action={deleteSkill}>
+              <input type="hidden" name="id" value={skill.id} />
+              <Button type="submit" variant="destructive" size="icon-sm" aria-label={`Delete ${skill.nameEn}`}>
+                <Trash2 size={16} />
+              </Button>
+            </form>
+          </div>
         ))}
       </div>
     </div>

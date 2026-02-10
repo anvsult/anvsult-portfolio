@@ -6,129 +6,115 @@ datasource db {
   provider = "postgresql"
 }
 
-// 1. PROJECTS: Portfolio work and side projects
 model Project {
   id            String   @id @default(cuid())
   titleEn       String
   titleFr       String
-  descriptionEn String   @db.Text
-  descriptionFr String   @db.Text
+  descriptionEn String
+  descriptionFr String
   slug          String   @unique
-  
   techStack     String[]
   imageUrl      String?
   githubLink    String?
   liveLink      String?
-  
   isFeatured    Boolean  @default(false)
   order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
-// 2. SKILLS: Technical and soft skills
 model Skill {
-  id          String   @id @default(cuid())
-  nameEn      String
-  nameFr      String
-  category    String   // "Frontend", "Backend", "Tools", "Soft Skills"
-  proficiency Int      @default(50) // 0-100 scale
-  iconName    String?  // Lucide icon name: "code", "database", "palette"
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  nameEn    String
+  nameFr    String
+  category  String
+  iconName  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// 3. EXPERIENCE: Professional experience
 model Experience {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   companyEn     String
   companyFr     String
   positionEn    String
   positionFr    String
-  descriptionEn String   @db.Text
-  descriptionFr String   @db.Text
-  startDate     DateTime // Store as "YYYY-MM-01", display as "Month YYYY"
-  endDate       DateTime? // null = current job
+  descriptionEn String
+  descriptionFr String
+  startDate     DateTime
+  endDate       DateTime?
   location      String?
   companyLogo   String?
   technologies  String[]
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  order         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
-// 4. EDUCATION: Academic background
 model Education {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   institutionEn String
   institutionFr String
   degreeEn      String
   degreeFr      String
   fieldEn       String?
   fieldFr       String?
-  startDate     DateTime // Store as "YYYY-MM-01", display as "Month YYYY"
+  startDate     DateTime
   endDate       DateTime?
-  descriptionEn String?  @db.Text
-  descriptionFr String?  @db.Text
+  descriptionEn String?
+  descriptionFr String?
   location      String?
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  order         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
-// 5. HOBBIES: Personal interests
 model Hobby {
   id            String   @id @default(cuid())
   nameEn        String
   nameFr        String
-  descriptionEn String   @db.Text
-  descriptionFr String   @db.Text
-  iconName      String?  // Lucide icon name: "music", "camera", "plane"
+  descriptionEn String
+  descriptionFr String
+  iconName      String?
   order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
-// 6. RESUME/CV: Downloadable resume files
 model Resume {
   id         String   @id @default(cuid())
-  fileUrl    String   // Supabase Storage URL
+  fileUrl    String
   fileName   String
-  locale     String   // "en" or "fr"
+  locale     String
   version    String   @default("1.0")
   uploadedAt DateTime @default(now())
 }
 
-// 7. MESSAGES: Contact form submissions
 model Message {
   id        String   @id @default(cuid())
   name      String
   email     String
   subject   String?
-  content   String   @db.Text
+  content   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
-// 8. TESTIMONIALS: User testimonials with approval workflow
 model Testimonial {
-  id             String    @id @default(cuid())
-  authorName     String
-  authorRole     String?
-  contentEn      String    @db.Text
-  contentFr      String    @db.Text
-  
-  // Approval workflow
-  isApproved     Boolean   @default(false)
-  createdAt      DateTime  @default(now())
+  id         String   @id @default(cuid())
+  authorName String
+  authorRole String?
+  contentEn  String
+  contentFr  String
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
 
-// 9. USER: Admin authentication
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String   // Hashed with bcrypt
+  password  String
   name      String?
   role      String   @default("ADMIN")
   createdAt DateTime @default(now())

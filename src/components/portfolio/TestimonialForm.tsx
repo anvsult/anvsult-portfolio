@@ -7,7 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export function TestimonialForm() {
+type TestimonialFormProps = {
+  onSuccess?: () => void;
+};
+
+export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleAction(formData: FormData) {
@@ -18,6 +22,7 @@ export function TestimonialForm() {
     if (res.success) {
       toast.success("Submitted!", { description: "Your testimonial is pending approval." });
       (document.getElementById("testimonial-form") as HTMLFormElement).reset();
+      onSuccess?.();
     } else {
       toast.error("Error", { description: res.error });
     }

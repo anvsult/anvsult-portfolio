@@ -2,22 +2,12 @@ import { getLocale } from 'next-intl/server';
 import { prisma } from '@/lib/db';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { SkillCard } from '@/components/portfolio/SkillCard';
-import { ModeToggle } from '@/components/ui/mode-toggle';
 import { ContactForm } from '@/components/portfolio/ContactForm';
 import { TestimonialCard } from '@/components/portfolio/TestimonialCard';
 import { Card, CardContent } from "@/components/ui/card";
 import { ResumePreview } from "@/components/portfolio/ResumePreview";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog"
-import { TestimonialForm } from '@/components/portfolio/TestimonialForm';
-import { Button } from '@/components/ui/button';
+import { TestimonialDialog } from '@/components/portfolio/TestimonialDialog';
 import { Timeline } from '@/components/portfolio/Timeline';
 import { HobbyCard } from '@/components/portfolio/HobbyCard';
 import { ResumeDownloader } from '@/components/portfolio/ResumeDownloader';
@@ -28,12 +18,11 @@ export default async function LandingPage() {
   // Fetch projects using your 'prisma' instance
   const projects = await prisma.project.findMany({
     where: { isFeatured: true },
-    orderBy: { order: 'asc' },
-    take: 3
+    orderBy: { order: 'asc' }
   });
 
   const skills = await prisma.skill.findMany({
-    orderBy: { proficiency: 'desc' }
+    orderBy: { order: 'asc' }
   })
 
   const testimonials = await prisma.testimonial.findMany({
@@ -42,7 +31,7 @@ export default async function LandingPage() {
   });
 
   const experiences = await prisma.experience.findMany({
-    orderBy: { order: 'asc' }
+    orderBy: [{ endDate: 'desc' }, { startDate: 'desc' }]
   });
 
   const hobbies = await prisma.hobby.findMany({
@@ -69,7 +58,6 @@ export default async function LandingPage() {
             ? 'Software Development Student @ Champlain College'
             : 'Étudiant en Développement Logiciel @ Collège Champlain'}
         </p>
-        <ModeToggle />
       </section>
 
       {/* Projects Grid */}
@@ -122,7 +110,6 @@ export default async function LandingPage() {
                 index={index}
                 name={locale === 'en' ? skill.nameEn : skill.nameFr}
                 category={skill.category}
-                proficiency={skill.proficiency}
               />
             ))
           ) : (
@@ -230,39 +217,15 @@ export default async function LandingPage() {
 
 
         <div className="mt-12 text-center">
-
-          <Dialog>
-
-            <DialogTrigger asChild>
-
-              <Button variant="outline">
-
-                {locale === 'en' ? 'Leave a Testimonial' : 'Laisser un témoignage'}
-
-              </Button>
-
-            </DialogTrigger>
-
-            <DialogContent className="sm:max-w-[500px]">
-
-              <DialogHeader>
-
-                <DialogTitle>Leave a Testimonial</DialogTitle>
-
-                <DialogDescription>
-
-                  Thank you for your feedback! It will appear on the site after a quick review.
-
-                </DialogDescription>
-
-              </DialogHeader>
-
-              <TestimonialForm />
-
-            </DialogContent>
-
-          </Dialog>
-
+          <TestimonialDialog
+            buttonLabel={locale === 'en' ? 'Leave a Testimonial' : 'Laisser un témoignage'}
+            title={locale === 'en' ? 'Leave a Testimonial' : 'Laisser un témoignage'}
+            description={
+              locale === 'en'
+                ? 'Thank you for your feedback! It will appear on the site after a quick review.'
+                : 'Merci pour votre retour! Il apparaitra sur le site apres une courte revision.'
+            }
+          />
         </div>
 
       </section>
