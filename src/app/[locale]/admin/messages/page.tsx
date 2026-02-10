@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/db";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Trash2, MailOpen, Mail } from "lucide-react";
 import { deleteMessage, markAsRead } from "./actions";
+import { AdminActionForm } from "@/components/admin/AdminActionForm";
+import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
 
 export default async function MessageInboxPage() {
   const messages = await prisma.message.findMany({
@@ -11,6 +12,12 @@ export default async function MessageInboxPage() {
 
   return (
     <div className="space-y-6">
+      <SearchParamsToast
+        messages={{
+          deleted: "Message deleted",
+          read: "Message marked as read",
+        }}
+      />
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Inbox</h1>
         <p className="text-muted-foreground">{messages.length} total messages</p>
@@ -37,15 +44,27 @@ export default async function MessageInboxPage() {
                   </div>
                   <div className="flex gap-2">
                     {!msg.isRead && (
-                      <form action={markAsRead.bind(null, msg.id)}>
-                        <Button variant="outline" size="sm">Mark Read</Button>
-                      </form>
+                      <AdminActionForm
+                        action={markAsRead.bind(null, msg.id)}
+                        variant="outline"
+                        size="sm"
+                        pendingLabel="Marking..."
+                      >
+                        Mark Read
+                      </AdminActionForm>
                     )}
-                    <form action={deleteMessage.bind(null, msg.id)}>
-                      <Button variant="destructive" size="sm">
-                        <Trash2 size={16} />
-                      </Button>
-                    </form>
+                    <AdminActionForm
+                      action={deleteMessage.bind(null, msg.id)}
+                      variant="destructive"
+                      size="sm"
+                      confirmTitle="Delete message?"
+                      confirmDescription="This action cannot be undone."
+                      confirmLabel="Delete"
+                      pendingLabel="Deleting..."
+                      ariaLabel="Delete message"
+                    >
+                      <Trash2 size={16} />
+                    </AdminActionForm>
                   </div>
                 </div>
               </CardHeader>

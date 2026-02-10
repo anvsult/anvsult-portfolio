@@ -30,6 +30,14 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
 
   return (
     <form id="testimonial-form" action={handleAction} className="space-y-4 pt-4">
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        aria-hidden="true"
+      />
       <div className="grid grid-cols-2 gap-4">
         <Input name="authorName" placeholder="Your Name" required />
         <Input name="authorRole" placeholder="Role (e.g. Professor)" required />

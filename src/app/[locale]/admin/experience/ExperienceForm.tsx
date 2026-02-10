@@ -7,7 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export function ExperienceForm() {
+type ExperienceFormProps = {
+  onSuccess?: () => void
+}
+
+export function ExperienceForm({ onSuccess }: ExperienceFormProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleAction(formData: FormData) {
@@ -18,6 +22,7 @@ export function ExperienceForm() {
     if (res.success) {
       toast.success("Experience added!");
       (document.getElementById("experience-form") as HTMLFormElement).reset();
+      onSuccess?.();
     } else {
       toast.error("Error", { description: res.error });
     }

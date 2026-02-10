@@ -1,11 +1,10 @@
-'use client'
-
-import { motion } from "framer-motion"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, Github } from "lucide-react"
 import Link from "next/link"
+import { MotionInView } from "@/components/motion/MotionInView"
+import { Magnetic } from "@/components/motion/Magnetic"
 
 interface ProjectProps {
   title: string
@@ -18,13 +17,15 @@ interface ProjectProps {
 
 export function ProjectCard({ title, description, techStack, githubLink, liveLink, index }: ProjectProps) {
   return (
-    <motion.div
+    <MotionInView
+      layoutId={`project-${title}`}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
     >
-      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
+      <Magnetic className="h-full w-full">
+        <Card className="h-full flex flex-col transition-shadow duration-300 hover:shadow-xl">
         <CardHeader>
           <CardTitle className="text-xl">{title}</CardTitle>
           <div className="flex flex-wrap gap-2 mt-2">
@@ -56,7 +57,8 @@ export function ProjectCard({ title, description, techStack, githubLink, liveLin
             </Button>
           )}
         </CardFooter>
-      </Card>
-    </motion.div>
+        </Card>
+      </Magnetic>
+    </MotionInView>
   )
 }

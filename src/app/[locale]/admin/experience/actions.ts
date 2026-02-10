@@ -2,8 +2,13 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { requireUser } from "@/lib/auth";
+import { getLocale } from "next-intl/server";
 
 export async function addExperience(formData: FormData) {
+  await requireUser();
+  const locale = await getLocale();
   const companyEn = formData.get("companyEn") as string;
   const companyFr = formData.get("companyFr") as string;
   const positionEn = formData.get("positionEn") as string;
@@ -36,8 +41,8 @@ export async function addExperience(formData: FormData) {
         order,
       },
     });
-    revalidatePath("/[locale]/admin/experience");
-    revalidatePath("/[locale]");
+    revalidatePath(`/${locale}/admin/experience`);
+    revalidatePath(`/${locale}`);
     return { success: true };
   } catch (e) {
     return { error: "Something went wrong." };
@@ -45,18 +50,24 @@ export async function addExperience(formData: FormData) {
 }
 
 export async function deleteExperience(id: string) {
+  await requireUser();
+  const locale = await getLocale();
   try {
     await prisma.experience.delete({ where: { id } });
-    revalidatePath("/[locale]/admin/experience");
-    revalidatePath("/[locale]");
-    return { success: true };
+    revalidatePath(`/${locale}/admin/experience`);
+    revalidatePath(`/${locale}`);
+    redirect(`/${locale}/admin/experience?toast=deleted`);
   } catch (e) {
     return { error: "Something went wrong." };
   }
 }
 
 export async function moveExperienceUp(id: string, order: number) {
-  if (order === 0) return;
+  await requireUser();
+  const locale = await getLocale();
+  if (order === 0) {
+    return;
+  }
   await prisma.$transaction([
     prisma.experience.updateMany({
       where: { order: order - 1 },
@@ -67,10 +78,13 @@ export async function moveExperienceUp(id: string, order: number) {
       data: { order: order - 1 }
     })
   ]);
-  revalidatePath("/[locale]/admin/experience");
+  revalidatePath(`/${locale}/admin/experience`);
+  redirect(`/${locale}/admin/experience?toast=moved_up`);
 }
 
 export async function moveExperienceDown(id: string, order: number) {
+  await requireUser();
+  const locale = await getLocale();
   await prisma.$transaction([
     prisma.experience.updateMany({
       where: { order: order + 1 },
@@ -81,5 +95,6 @@ export async function moveExperienceDown(id: string, order: number) {
       data: { order: order + 1 }
     })
   ]);
-  revalidatePath("/[locale]/admin/experience");
+  revalidatePath(`/${locale}/admin/experience`);
+  redirect(`/${locale}/admin/experience?toast=moved_down`);
 }

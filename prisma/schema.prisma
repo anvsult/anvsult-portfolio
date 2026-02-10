@@ -21,6 +21,9 @@ model Project {
   order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  projectStartDate DateTime
+  projectEndDate   DateTime?
+  isActive        Boolean  @default(true)
 }
 
 model Skill {

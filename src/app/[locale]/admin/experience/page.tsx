@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/db";
-import { ExperienceForm } from "./ExperienceForm";
+import { Card, CardContent } from "@/components/ui/card";
+import { ExperienceActions } from "./ExperienceActions";
+import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
+import { ExperienceDialog } from "./ExperienceDialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { deleteExperience, moveExperienceDown, moveExperienceUp } from "./actions";
-import { Trash2, ArrowUp, ArrowDown } from "lucide-react";
 
 export default async function ExperienceAdmin() {
   const experiences = await prisma.experience.findMany({
@@ -12,16 +12,23 @@ export default async function ExperienceAdmin() {
 
   return (
     <div className="space-y-6">
+      <SearchParamsToast
+        messages={{
+          deleted: "Experience deleted",
+          moved_up: "Moved up",
+          moved_down: "Moved down",
+        }}
+      />
       <h1 className="text-3xl font-bold">Manage Experience</h1>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Add New Experience</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ExperienceForm />
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">Maintain your timeline entries.</p>
+        <ExperienceDialog
+          trigger={<Button>Add Experience</Button>}
+          title="Add Experience"
+          description="Fill in the details and save."
+        />
+      </div>
 
       <div className="space-y-4">
         <h2 className="text-2xl font-bold">Existing Experiences</h2>
@@ -34,24 +41,12 @@ export default async function ExperienceAdmin() {
                   {exp.startDate.toLocaleDateString()} - {exp.endDate?.toLocaleDateString() || 'Present'}
                 </p>
               </div>
-              <div className="flex gap-2">
-                {/* TODO: Add Edit functionality */}
-                <form action={moveExperienceUp.bind(null, exp.id, exp.order)}>
-                  <Button variant="outline" size="icon" disabled={index === 0}>
-                    <ArrowUp size={16} />
-                  </Button>
-                </form>
-                <form action={moveExperienceDown.bind(null, exp.id, exp.order)}>
-                  <Button variant="outline" size="icon" disabled={index === experiences.length - 1}>
-                    <ArrowDown size={16} />
-                  </Button>
-                </form>
-                <form action={deleteExperience.bind(null, exp.id)}>
-                  <Button variant="destructive" size="icon">
-                    <Trash2 size={16} />
-                  </Button>
-                </form>
-              </div>
+              <ExperienceActions
+                id={exp.id}
+                order={exp.order}
+                isFirst={index === 0}
+                isLast={index === experiences.length - 1}
+              />
             </CardContent>
           </Card>
         ))}

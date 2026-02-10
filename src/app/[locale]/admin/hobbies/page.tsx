@@ -5,18 +5,23 @@ import { HobbyDialog } from "./HobbyDialog";
 import { deleteHobby } from "./actions";
 import * as Icons from "lucide-react";
 import { Pencil, Trash2 } from "lucide-react";
-import { getLocale } from "next-intl/server";
+import { AdminActionForm } from "@/components/admin/AdminActionForm";
+import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
 
 type LucideIconName = keyof typeof Icons;
 
 export default async function HobbiesAdmin() {
-  const locale = await getLocale();
   const hobbies = await prisma.hobby.findMany({
     orderBy: { order: 'asc' }
   });
 
   return (
     <div className="space-y-6">
+      <SearchParamsToast
+        messages={{
+          deleted: "Hobby deleted",
+        }}
+      />
       <h1 className="text-3xl font-bold">Hobbies</h1>
       
       <div className="flex items-center justify-between">
@@ -65,11 +70,18 @@ export default async function HobbiesAdmin() {
                     }}
                     submitLabel="Save Changes"
                   />
-                  <form action={deleteHobby.bind(null, hobby.id)}>
-                    <Button variant="destructive" size="icon">
-                      <Trash2 size={16} />
-                    </Button>
-                  </form>
+                  <AdminActionForm
+                    action={deleteHobby.bind(null, hobby.id)}
+                    variant="destructive"
+                    size="icon"
+                    confirmTitle="Delete hobby?"
+                    confirmDescription={`This will remove \"${hobby.nameEn}\" permanently.`}
+                    confirmLabel="Delete"
+                    pendingLabel="Deleting..."
+                    ariaLabel={`Delete ${hobby.nameEn}`}
+                  >
+                    <Trash2 size={16} />
+                  </AdminActionForm>
                 </div>
               </CardContent>
             </Card>

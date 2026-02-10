@@ -6,6 +6,8 @@ import {routing} from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server"
 import { Toaster } from "sonner";
+import { MotionProvider } from "@/components/motion/MotionProvider";
+import { CursorFollower } from "@/components/motion/CursorFollower";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +44,10 @@ export default async function LocaleLayout({children, params}: Props) {
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <MotionProvider>
+            <CursorFollower />
+            {children}
+          </MotionProvider>
           <Toaster position="top-center" richColors />
         </NextIntlClientProvider>
       </body>

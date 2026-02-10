@@ -1,7 +1,5 @@
-'use client'
-
-import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
+import { MotionInView } from "@/components/motion/MotionInView"
 
 interface SkillCardProps {
   name: string
@@ -11,7 +9,7 @@ interface SkillCardProps {
 
 export function SkillCard({ name, category, index }: SkillCardProps) {
   return (
-    <motion.div
+    <MotionInView
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
@@ -29,6 +27,6 @@ export function SkillCard({ name, category, index }: SkillCardProps) {
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </MotionInView>
   )
 }

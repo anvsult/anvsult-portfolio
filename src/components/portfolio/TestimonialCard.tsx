@@ -1,8 +1,5 @@
-'use client'
-
-import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
-import { Quote } from "lucide-react"
+import { MotionInView } from "@/components/motion/MotionInView"
 
 interface TestimonialProps {
   name: string
@@ -11,14 +8,24 @@ interface TestimonialProps {
   index: number
 }
 
+// Helper function to get initials from name
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join('');
+}
+
 export function TestimonialCard({ name, role, content, index }: TestimonialProps) {
+  const initials = getInitials(name);
+  
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+    <MotionInView
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       transition={{ 
-        type: "spring",
-        duration: 0.8, 
+        duration: 0.5, 
         delay: index * 0.1 
       }}
       whileHover={{
@@ -28,26 +35,33 @@ export function TestimonialCard({ name, role, content, index }: TestimonialProps
       viewport={{ once: true }}
       className="h-full"
     >
-      <Card className="relative overflow-hidden h-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5">
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
-        <CardContent className="pt-10 px-7 pb-7">
-          <Quote className="absolute top-6 right-6 text-white/10 w-16 h-16 -z-10" />
-          
-          <p className="text-foreground/80 italic leading-relaxed mb-6 font-light">
-            "{content}"
-          </p>
-          
-          <div className="flex items-center gap-4 mt-auto">
-            <div className="h-11 w-11 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary border border-primary/30">
-              {name.charAt(0)}
-            </div>
-            <div>
-              <h4 className="font-semibold text-base leading-none">{name}</h4>
-              {role && <p className="text-xs text-muted-foreground mt-1.5">{role}</p>}
+      <Card className="relative overflow-visible h-full bg-card border-border shadow-xl">
+        <CardContent className="pt-24 px-8 pb-8 text-center">
+          {/* Profile Picture with Initials */}
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-2xl border-4 border-card">
+              {initials}
             </div>
           </div>
+          
+          {/* Name */}
+          <h3 className="text-2xl font-bold text-foreground mb-2">
+            {name}
+          </h3>
+          
+          {/* Role */}
+          {role && (
+            <p className="text-muted-foreground text-sm mb-6">
+              {role}
+            </p>
+          )}
+          
+          {/* Testimonial Content */}
+          <p className="text-foreground/80 leading-relaxed text-base">
+            {content}
+          </p>
         </CardContent>
       </Card>
-    </motion.div>
+    </MotionInView>
   )
 }

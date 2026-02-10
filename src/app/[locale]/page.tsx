@@ -1,57 +1,37 @@
 import { getLocale } from 'next-intl/server';
-import { prisma } from '@/lib/db';
-import { ProjectCard } from '@/components/portfolio/ProjectCard';
-import { SkillCard } from '@/components/portfolio/SkillCard';
+import { getLandingData } from '@/lib/portfolio';
 import { ContactForm } from '@/components/portfolio/ContactForm';
-import { TestimonialCard } from '@/components/portfolio/TestimonialCard';
+import { TestimonialWall } from '@/components/portfolio/TestimonialWall';
 import { Card, CardContent } from "@/components/ui/card";
-import { ResumePreview } from "@/components/portfolio/ResumePreview";
+import { ResumePreviewClient } from "@/components/portfolio/ResumePreviewClient";
+import { ProjectGallery } from "@/components/portfolio/ProjectGallery";
 
 import { TestimonialDialog } from '@/components/portfolio/TestimonialDialog';
 import { Timeline } from '@/components/portfolio/Timeline';
 import { HobbyCard } from '@/components/portfolio/HobbyCard';
 import { ResumeDownloader } from '@/components/portfolio/ResumeDownloader';
+import { BottomNav } from '@/components/portfolio/BottomNav';
+import { Marquee } from "@/components/motion/Marquee";
+import { FeaturedProjectsTimeline } from "@/components/portfolio/FeaturedProjectsTimeline";
+
 
 export default async function LandingPage() {
   const locale = await getLocale();
 
-  // Fetch projects using your 'prisma' instance
-  const projects = await prisma.project.findMany({
-    where: { isFeatured: true },
-    orderBy: { order: 'asc' }
-  });
-
-  const skills = await prisma.skill.findMany({
-    orderBy: { order: 'asc' }
-  })
-
-  const testimonials = await prisma.testimonial.findMany({
-    where: { isApproved: true },
-    orderBy: { createdAt: 'desc' }
-  });
-
-  const experiences = await prisma.experience.findMany({
-    orderBy: [{ endDate: 'desc' }, { startDate: 'desc' }]
-  });
-
-  const hobbies = await prisma.hobby.findMany({
-    orderBy: { order: 'asc' }
-  });
-
-  const resume = await prisma.resume.findFirst({
-    where: { locale: locale },
-    orderBy: { uploadedAt: 'desc' }
-  });
+  const { projects, skills, testimonials, experiences, hobbies, resume } = await getLandingData(locale);
 
 
   // // Optional: Grouping by category
   // const frontendSkills = skills.filter(s => s.category === 'Frontend');
   // const backendSkills = skills.filter(s => s.category === 'Backend');
 
+  const skillLabels = skills.map((skill) => (locale === 'en' ? skill.nameEn : skill.nameFr));
+
   return (
-    <main className="max-w-5xl mx-auto px-6 py-20">
+    <>
+      <main className="max-w-5xl mx-auto px-6 py-20 pb-32">
       {/* Hero Section */}
-      <section className="text-center space-y-4 py-12">
+      <section id="top" className="text-center space-y-4 py-12 scroll-mt-24">
         <h1 className="text-5xl font-bold tracking-tight">Anvar Sultanov</h1>
         <p className="text-xl text-muted-foreground">
           {locale === 'en'
@@ -60,35 +40,25 @@ export default async function LandingPage() {
         </p>
       </section>
 
-      {/* Projects Grid */}
-      <section className="mt-20">
+      {/* Projects Gallery */}
+      <section id="projects" className="mt-20 scroll-mt-24">
         <h2 className="text-3xl font-semibold mb-8">
           {locale === 'en' ? 'Featured Projects' : 'Projets Vedettes'}
         </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.length > 0 ? (
-            projects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                index={index}
-                title={locale === 'en' ? project.titleEn : project.titleFr}
-                description={locale === 'en' ? project.descriptionEn : project.descriptionFr}
-                techStack={project.techStack}
-                githubLink={project.githubLink}
-                liveLink={project.liveLink}
-              />
-            ))
-          ) : (
-            <p className="text-muted-foreground col-span-full">
-              {locale === 'en' ? 'No projects added yet.' : 'Aucun projet ajouté pour le moment.'}
-            </p>
-          )}
-        </div>
+        <FeaturedProjectsTimeline
+        projects={projects.map((project) => ({
+          id: project.id,
+          title: project.titleEn,
+          techStack: project.techStack,
+          projectStartDate: project.projectStartDate,
+          projectEndDate: project.projectEndDate,
+          isActive: project.isActive,
+        }))}
+      />
       </section>
 
       {/* Experience Timeline */}
-      <section className="mt-20">
+      <section id="journey" className="mt-20 scroll-mt-24">
         <h2 className="text-3xl font-semibold mb-8 text-center">
           {locale === 'en' ? 'My Journey' : 'Mon Parcours'}
         </h2>
@@ -96,13 +66,20 @@ export default async function LandingPage() {
       </section>
 
       {/* Skills Grid */}
-      <section className="mt-20">
+      <section id="skills" className="mt-20 scroll-mt-24">
         <h2 className="text-3xl font-semibold mb-8">
           {/* TODO Use translations */}
           {locale === 'en' ? 'Skills' : 'Compétences'}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Marquee
+          items={skillLabels}
+          className="mb-8"
+          itemClassName="rounded-full border border-border px-4 py-2 text-xs uppercase tracking-wide"
+          duration={24}
+        />
+
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {skills.length > 0 ? (
             skills.map((skill, index) => (
               <SkillCard
@@ -117,7 +94,7 @@ export default async function LandingPage() {
               {locale === 'en' ? 'No skills added yet.' : 'Aucune compétence ajoutée pour le moment.'}
             </p>
           )}
-        </div>
+        </div> */}
       </section>
 
 
@@ -130,7 +107,7 @@ export default async function LandingPage() {
 
 
 
-            <section className="mt-20">
+            <section id="hobbies" className="mt-20 scroll-mt-24">
 
 
 
@@ -146,7 +123,7 @@ export default async function LandingPage() {
 
 
 
-              <div className="grid grid-cols-5 grid-rows-2 gap-4 min-h-[300px]">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 min-h-[300px]">
                 {hobbies.map((hobby, index) => (
                   <HobbyCard
                     key={hobby.id}
@@ -155,9 +132,12 @@ export default async function LandingPage() {
                     description={locale === 'en' ? hobby.descriptionEn : hobby.descriptionFr}
                     iconName={hobby.iconName}
                     className={
-                      index === 0 ? 'col-span-2 row-span-1' :
-                      index === 3 ? 'col-span-2 row-span-1' : ''
+                      'col-span-1 row-span-1'
                     }
+                    // className={
+                    //   index === 0 ? 'col-span-2 row-span-1' :
+                    //   index === 3 ? 'col-span-2 row-span-1' : ''
+                    // }
                   />
                 ))}
               </div>
@@ -176,7 +156,7 @@ export default async function LandingPage() {
 
 
 
-            <section className="mt-20">
+            <section id="testimonials" className="mt-20 scroll-mt-24">
 
 
 
@@ -190,29 +170,7 @@ export default async function LandingPage() {
 
 
 
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-
-          {testimonials.map((t, index) => (
-
-            <div key={t.id} className="break-inside-avoid">
-
-              <TestimonialCard
-
-                index={index}
-
-                name={t.authorName}
-
-                role={t.authorRole}
-
-                content={locale === 'en' ? t.contentEn : t.contentFr}
-
-              />
-
-            </div>
-
-          ))}
-
-        </div>
+        <TestimonialWall testimonials={testimonials} locale={locale} />
 
 
 
@@ -236,7 +194,7 @@ export default async function LandingPage() {
 
 
 
-      <section className="mt-20">
+      <section id="resume" className="mt-20 scroll-mt-24">
 
 
 
@@ -300,7 +258,7 @@ export default async function LandingPage() {
 
 
 
-                  <ResumePreview fileUrl={resume.fileUrl} />
+                  <ResumePreviewClient fileUrl={resume.fileUrl} />
 
 
 
@@ -352,7 +310,7 @@ export default async function LandingPage() {
 
 
 
-      <section className="mt-32 max-w-2xl mx-auto">
+      <section id="contact" className="mt-32 max-w-2xl mx-auto scroll-mt-24">
 
 
 
@@ -376,7 +334,9 @@ export default async function LandingPage() {
 
 
 
-    </main>
+      </main>
+      <BottomNav locale={locale} />
+    </>
 
 
 
@@ -385,8 +345,4 @@ export default async function LandingPage() {
 
 
 }
-
-
-
-
 

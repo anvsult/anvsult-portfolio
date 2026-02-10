@@ -1,6 +1,7 @@
 'use client'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
+  const locale = useLocale()
   const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -22,7 +24,7 @@ export default function LoginPage() {
     if (error) {
       alert(error.message)
     } else {
-      router.push('/admin') // Send you to your CMS
+      router.push(`/${locale}/admin`) // Send you to your CMS
       router.refresh()
     }
   }

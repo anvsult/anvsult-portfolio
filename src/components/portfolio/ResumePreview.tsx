@@ -46,7 +46,7 @@ export function ResumePreview({ fileUrl }: ResumePreviewProps) {
             </div>
         }
       >
-        <Page pageNumber={1} width={400} />
+        <Page pageNumber={1} width={320} />
       </Document>
     </div>
   );

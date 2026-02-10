@@ -25,6 +25,14 @@ export function ContactForm() {
 
   return (
     <form id="contact-form" action={handleSubmit} className="space-y-4">
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        aria-hidden="true"
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input name="name" placeholder="Your Name" required />
         <Input name="email" type="email" placeholder="Your Email" required />

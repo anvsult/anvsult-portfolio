@@ -8,6 +8,11 @@ export async function sendMessage(formData: FormData) {
   const email = formData.get("email") as string;
   const subject = formData.get("subject") as string;
   const content = formData.get("content") as string;
+  const website = formData.get("website") as string | null;
+
+  if (website) {
+    return { error: "Failed to send message. Please try again." };
+  }
 
   if (!name || !email || !content) {
     return { error: "Please fill in all required fields." };
