@@ -36,10 +36,9 @@ export default async function HobbiesAdmin() {
 
       <div className="space-y-4">
         {hobbies.map((hobby) => {
-          const Icon =
-            hobby.iconName && Icons[hobby.iconName as LucideIconName]
-              ? Icons[hobby.iconName as LucideIconName]
-              : null;
+          const Icon = (hobby.iconName && Icons[hobby.iconName as LucideIconName]
+            ? Icons[hobby.iconName as LucideIconName]
+            : null) as React.ComponentType<{ className?: string; size?: number }> | null;
 
           return (
             <Card key={hobby.id}>

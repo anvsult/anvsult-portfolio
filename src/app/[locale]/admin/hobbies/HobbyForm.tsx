@@ -28,7 +28,7 @@ type HobbyFormProps = {
 export function HobbyForm({ initial, submitLabel, onSuccess }: HobbyFormProps) {
   const [loading, setLoading] = useState(false);
   const [iconName, setIconName] = useState(initial?.iconName ?? '');
-  const Icon = iconName && Icons[iconName as LucideIconName] ? Icons[iconName as LucideIconName] : null;
+  const Icon = (iconName && Icons[iconName as LucideIconName] ? Icons[iconName as LucideIconName] : null) as React.ComponentType<{ className?: string; size?: number }> | null;
   const isEdit = Boolean(initial?.id);
 
   async function handleAction(formData: FormData) {

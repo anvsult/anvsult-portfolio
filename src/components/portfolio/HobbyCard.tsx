@@ -24,7 +24,7 @@ interface HobbyCardProps {
 }
 
 export function HobbyCard({ name, description, iconName, className, index }: HobbyCardProps) {
-  const Icon = iconName && Icons[iconName as LucideIconName] ? Icons[iconName as LucideIconName] : null;
+  const Icon = (iconName && Icons[iconName as LucideIconName] ? Icons[iconName as LucideIconName] : null) as React.ComponentType<{ className?: string; size?: number }> | null;
   const cardRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
