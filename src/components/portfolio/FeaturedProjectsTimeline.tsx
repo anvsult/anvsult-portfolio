@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform, easeOut } from "framer-motion";
 import { Calendar, ExternalLink, Github } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -138,7 +138,7 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
             : {
                 initial: { opacity: 0, y: isAbove ? -24 : 24 },
                 whileInView: { opacity: 1, y: 0 },
-                transition: { duration: 0.45, ease: "easeOut" },
+                transition: { duration: 0.45, ease: easeOut },
                 viewport: { once: true, amount: 0.4 },
               };
 

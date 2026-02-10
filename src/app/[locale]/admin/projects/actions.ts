@@ -26,6 +26,10 @@ export async function createProject(formData: FormData) {
   const githubLink = formData.get("githubLink") as string;
   const liveLink = formData.get("liveLink") as string;
   const isFeatured = formData.get("isFeatured") === "on";
+  const projectStartDateRaw = formData.get("projectStartDate") as string;
+  const projectEndDateRaw = formData.get("projectEndDate") as string | null;
+  const projectStartDate = projectStartDateRaw ? new Date(projectStartDateRaw) : new Date();
+  const projectEndDate = projectEndDateRaw ? new Date(projectEndDateRaw) : null;
 
   // Basic validation
   if (!titleEn || !titleFr) throw new Error("Titles are required");
@@ -45,10 +49,12 @@ export async function createProject(formData: FormData) {
       descriptionEn,
       descriptionFr,
       slug,
-      techStack: techStackString.split(",").map(s => s.trim()), // "React, Next" -> ["React", "Next"]
+      techStack: techStackString.split(",").map(s => s.trim()),
       githubLink,
       liveLink,
       isFeatured,
+      projectStartDate,
+      projectEndDate,
     },
   });
 

@@ -58,7 +58,10 @@ export async function deleteExperience(id: string) {
     revalidatePath(`/${locale}`);
     redirect(`/${locale}/admin/experience?toast=deleted`);
   } catch (e) {
-    return { error: "Something went wrong." };
+    // Optionally log the error
+    // console.error(e);
+    // Always return void to match expected type
+    return;
   }
 }
 

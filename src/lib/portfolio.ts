@@ -14,6 +14,9 @@ export async function getLandingData(locale: string) {
         techStack: true,
         githubLink: true,
         liveLink: true,
+        projectStartDate: true,
+        projectEndDate: true,
+        isActive: true,
       },
     }),
     prisma.skill.findMany({
