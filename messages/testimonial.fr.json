@@ -1,0 +1,11 @@
+{
+  "submitted": "Envoyé !",
+  "pendingApproval": "Votre témoignage est en attente d'approbation.",
+  "error": "Erreur",
+  "yourName": "Votre nom",
+  "yourRole": "Rôle (ex: Professeur)",
+  "testimonialEn": "Votre témoignage en anglais...",
+  "testimonialFr": "Votre témoignage en français (optionnel)",
+  "submitting": "Envoi en cours...",
+  "submitTestimonial": "Envoyer le témoignage"
+}

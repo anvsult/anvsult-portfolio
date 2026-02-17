@@ -1,5 +1,6 @@
-'use client'
+"use client";
 
+import { useTranslations } from "next-intl";
 import { submitTestimonial } from "@/app/[locale]/testimonials/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -22,6 +22,7 @@ type TestimonialFormProps = {
 };
 
 export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
+  const t = useTranslations('testimonial');
   const form = useForm<TestimonialFormData>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -44,11 +45,11 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
     const res = await submitTestimonial(formData);
 
     if (res.success) {
-      toast.success("Submitted!", { description: "Your testimonial is pending approval." });
+      toast.success(t('submitted'), { description: t('pendingApproval') });
       form.reset();
       onSuccess?.();
     } else {
-      toast.error("Error", { description: res.error });
+      toast.error(t('error'), { description: res.error });
       if (res.fieldErrors) {
         Object.keys(res.fieldErrors).forEach((key) => {
           const fieldName = key as keyof TestimonialFormData;
@@ -73,7 +74,7 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Your Name" {...field} />
+                  <Input placeholder={t('yourName')} {...field} />
                 </FormControl>
                 <FormMessage className="text-red-600" />
               </FormItem>
@@ -85,7 +86,7 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Role (e.g. Professor)" {...field} />
+                  <Input placeholder={t('yourRole')} {...field} />
                 </FormControl>
                 <FormMessage className="text-red-600" />
               </FormItem>
@@ -98,7 +99,7 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea placeholder="Your testimonial in English..." {...field} />
+                <Textarea placeholder={t('testimonialEn')} {...field} />
               </FormControl>
               <FormMessage className="text-red-600" />
             </FormItem>
@@ -110,14 +111,14 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea placeholder="Votre témoignage en français (optionnel)" {...field} />
+                <Textarea placeholder={t('testimonialFr')} {...field} />
               </FormControl>
               <FormMessage className="text-red-600" />
             </FormItem>
           )}
         />
         <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Submitting..." : "Submit Testimonial"}
+          {form.formState.isSubmitting ? t('submitting') : t('submitTestimonial')}
         </Button>
       </form>
     </Form>

@@ -276,7 +276,7 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
       <div
         className={cn(
           "hidden md:flex items-center",
-          enableDesktopScroll ? "sticky top-24 h-[70vh]" : "h-auto",
+          enableDesktopScroll ? "sticky top-0 h-[950px]" : "h-auto",
         )}
       >
         {renderTrack(enableDesktopScroll)}
