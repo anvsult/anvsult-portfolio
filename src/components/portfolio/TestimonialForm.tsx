@@ -51,9 +51,13 @@ export function TestimonialForm({ onSuccess }: TestimonialFormProps) {
       toast.error("Error", { description: res.error });
       if (res.fieldErrors) {
         Object.keys(res.fieldErrors).forEach((key) => {
-          form.setError(key as keyof TestimonialFormData, {
-            message: res.fieldErrors[key][0],
-          });
+          const fieldName = key as keyof TestimonialFormData;
+          const messages = res.fieldErrors?.[fieldName];
+          if (messages && messages[0]) {
+            form.setError(fieldName, {
+              message: messages[0],
+            });
+          }
         });
       }
     }
