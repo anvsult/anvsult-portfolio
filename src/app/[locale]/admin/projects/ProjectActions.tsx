@@ -10,11 +10,14 @@ interface ProjectActionsProps {
   locale: string;
 }
 
+import { useTranslations } from "next-intl";
+
 export function ProjectActions({ projectId, projectTitle, locale }: ProjectActionsProps) {
+  const t = useTranslations('admin');
   return (
     <div className="flex gap-2">
       <Link href={`/${locale}/admin/projects/${projectId}/edit`}>
-        <Button variant="outline" size="icon" aria-label={`Edit ${projectTitle}`}>
+        <Button variant="outline" size="icon" aria-label={t('ariaEdit', { title: projectTitle })}>
           <Pencil size={16} />
         </Button>
       </Link>
@@ -22,11 +25,11 @@ export function ProjectActions({ projectId, projectTitle, locale }: ProjectActio
         action={deleteProject.bind(null, projectId)}
         variant="destructive"
         size="icon"
-        confirmTitle="Delete project?"
-        confirmDescription={`This will permanently delete \"${projectTitle}\".`}
-        confirmLabel="Delete"
-        pendingLabel="Deleting..."
-        ariaLabel={`Delete ${projectTitle}`}
+        confirmTitle={t('deleteProjectConfirm')}
+        confirmDescription={t('deleteProjectDesc', { title: projectTitle })}
+        confirmLabel={t('delete')}
+        pendingLabel={t('deleting')}
+        ariaLabel={t('ariaDelete', { title: projectTitle })}
       >
         <Trash2 size={16} />
       </AdminActionForm>

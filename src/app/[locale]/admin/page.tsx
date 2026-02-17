@@ -2,35 +2,27 @@ import { prisma } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Briefcase, MessageSquare, Star, Code, ArrowUpRight } from "lucide-react";
-import { getLocale } from "next-intl/server";
+import { Briefcase, Star, Code, ArrowUpRight } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function AdminDashboard() {
   // Fetch counts for a quick overview
   const locale = await getLocale();
+  const t = await getTranslations('admin');
   const [
     projectCount,
-    messageCount,
     skillCount,
     testimonialCount,
     recentProjects,
-    unreadMessages,
     pendingTestimonials,
   ] = await Promise.all([
     prisma.project.count(),
-    prisma.message.count({ where: { isRead: false } }),
     prisma.skill.count(),
     prisma.testimonial.count({ where: { isApproved: false } }),
     prisma.project.findMany({
       orderBy: { createdAt: "desc" },
       take: 3,
       select: { id: true, titleEn: true, techStack: true },
-    }),
-    prisma.message.findMany({
-      where: { isRead: false },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-      select: { id: true, subject: true, name: true, createdAt: true },
     }),
     prisma.testimonial.findMany({
       where: { isApproved: false },
@@ -41,22 +33,22 @@ export default async function AdminDashboard() {
   ]);
 
   const stats = [
-    { label: "Projects", value: projectCount, icon: <Briefcase className="text-blue-500" /> },
-    { label: "New Messages", value: messageCount, icon: <MessageSquare className="text-green-500" /> },
-    { label: "Skills", value: skillCount, icon: <Code className="text-purple-500" /> },
-    { label: "Pending Testimonials", value: testimonialCount, icon: <Star className="text-yellow-500" /> },
+    { label: t('projects'), value: projectCount, icon: <Briefcase className="text-blue-500" /> },
+    { label: t('skills'), value: skillCount, icon: <Code className="text-purple-500" /> },
+    { label: t('pendingTestimonials'), value: testimonialCount, icon: <Star className="text-yellow-500" /> },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">Command Center</h1>
-        <p className="text-muted-foreground">Real-time overview of content, approvals, and inbox activity.</p>
+        <h1 className="text-3xl font-bold">{t('commandCenter')}</h1>
+        <p className="text-muted-foreground">{t('overview')}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-12">
+      {/* Stats Overview */}
+      <div className="grid gap-4 md:grid-cols-3">
         {stats.map((stat) => (
-          <Card key={stat.label} className="md:col-span-2 lg:col-span-3">
+          <Card key={stat.label}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
               {stat.icon}
@@ -66,56 +58,26 @@ export default async function AdminDashboard() {
             </CardContent>
           </Card>
         ))}
+      </div>
 
-        <Card className="md:col-span-4 lg:col-span-6">
+      {/* Main Content Area */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="flex flex-col">
           <CardHeader className="flex items-center justify-between gap-2">
             <div>
-              <CardTitle>Inbox Triage</CardTitle>
-              <p className="text-sm text-muted-foreground">Unread messages that need attention.</p>
-            </div>
-            <Link href={`/${locale}/admin/messages`}>
-              <Button variant="outline" size="sm" className="gap-1">
-                View all <ArrowUpRight size={14} />
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {unreadMessages.length === 0 ? (
-              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                Inbox is clear. No unread messages.
-              </div>
-            ) : (
-              unreadMessages.map((msg) => (
-                <div key={msg.id} className="flex items-center justify-between gap-4 rounded-lg border p-3">
-                  <div>
-                    <p className="text-sm font-semibold">{msg.subject ?? "No subject"}</p>
-                    <p className="text-xs text-muted-foreground">From {msg.name}</p>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(msg.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="md:col-span-2 lg:col-span-4">
-          <CardHeader className="flex items-center justify-between gap-2">
-            <div>
-              <CardTitle>Pending Testimonials</CardTitle>
-              <p className="text-sm text-muted-foreground">Awaiting approval.</p>
+              <CardTitle>{t('pendingTestimonialsTitle')}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t('awaitingApproval')}</p>
             </div>
             <Link href={`/${locale}/admin/testimonials`}>
               <Button variant="outline" size="sm" className="gap-1">
-                Review <ArrowUpRight size={14} />
+                {t('review')} <ArrowUpRight size={14} />
               </Button>
             </Link>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 flex-1">
             {pendingTestimonials.length === 0 ? (
-              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                Nothing pending right now.
+              <div className="flex h-full items-center justify-center rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                {t('nothingPending')}
               </div>
             ) : (
               pendingTestimonials.map((t) => (
@@ -128,22 +90,22 @@ export default async function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="md:col-span-2 lg:col-span-4">
+        <Card className="flex flex-col">
           <CardHeader className="flex items-center justify-between gap-2">
             <div>
-              <CardTitle>Recent Projects</CardTitle>
-              <p className="text-sm text-muted-foreground">Latest additions and edits.</p>
+              <CardTitle>{t('recentProjects')}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t('latestAdditions')}</p>
             </div>
             <Link href={`/${locale}/admin/projects`}>
               <Button variant="outline" size="sm" className="gap-1">
-                Manage <ArrowUpRight size={14} />
+                {t('manage')} <ArrowUpRight size={14} />
               </Button>
             </Link>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 flex-1">
             {recentProjects.length === 0 ? (
-              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                No projects yet. Add your first project.
+              <div className="flex h-full items-center justify-center rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                {t('noProjects')}
               </div>
             ) : (
               recentProjects.map((project) => (
@@ -157,32 +119,44 @@ export default async function AdminDashboard() {
             )}
           </CardContent>
         </Card>
-
-        <Card className="md:col-span-4 lg:col-span-4">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <p className="text-sm text-muted-foreground">Jump straight into content updates.</p>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            <Link href={`/${locale}/admin/projects/new`}>
-              <Button className="w-full justify-between">
-                Create Project <ArrowUpRight size={14} />
-              </Button>
-            </Link>
-            <Link href={`/${locale}/admin/skills`}>
-              <Button variant="outline" className="w-full justify-between">
-                Add Skills <ArrowUpRight size={14} />
-              </Button>
-            </Link>
-            <Link href={`/${locale}/admin/experience`}>
-              <Button variant="outline" className="w-full justify-between">
-                Update Experience <ArrowUpRight size={14} />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-
       </div>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('quickActions')}</CardTitle>
+          <p className="text-sm text-muted-foreground">{t('jumpToContent')}</p>
+        </CardHeader>
+        <CardContent className="grid gap-2 md:grid-cols-3">
+          <Link href={`/${locale}/admin/projects/new`}>
+            <Button className="w-full justify-between h-auto py-4">
+              <span className="flex flex-col items-start gap-1">
+                <span>{t('createProject')}</span>
+                <span className="text-xs font-normal opacity-80">{t('addNewWork')}</span>
+              </span>
+              <ArrowUpRight size={16} />
+            </Button>
+          </Link>
+          <Link href={`/${locale}/admin/skills`}>
+            <Button variant="outline" className="w-full justify-between h-auto py-4">
+              <span className="flex flex-col items-start gap-1">
+                <span>{t('addSkills')}</span>
+                <span className="text-xs font-normal text-muted-foreground">{t('updateStack')}</span>
+              </span>
+              <ArrowUpRight size={16} />
+            </Button>
+          </Link>
+          <Link href={`/${locale}/admin/experience`}>
+            <Button variant="outline" className="w-full justify-between h-auto py-4">
+              <span className="flex flex-col items-start gap-1">
+                <span>{t('updateExperience')}</span>
+                <span className="text-xs font-normal text-muted-foreground">{t('careerJourney')}</span>
+              </span>
+              <ArrowUpRight size={16} />
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
     </div>
   );
 }

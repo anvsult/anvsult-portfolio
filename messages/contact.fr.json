@@ -1,0 +1,11 @@
+{
+  "yourName": "Votre nom",
+  "yourEmail": "Votre e-mail",
+  "subject": "Sujet",
+  "howCanIHelp": "Comment puis-je vous aider ?",
+  "sending": "Envoi...",
+  "sendMessage": "Envoyer le message",
+  "messageSent": "Message envoyé !",
+  "messageSentDesc": "Je vous répondrai bientôt.",
+  "error": "Erreur"
+}

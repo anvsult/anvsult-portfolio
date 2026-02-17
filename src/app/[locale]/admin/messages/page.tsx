@@ -5,7 +5,10 @@ import { deleteMessage, markAsRead } from "./actions";
 import { AdminActionForm } from "@/components/admin/AdminActionForm";
 import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
 
+import { getTranslations } from "next-intl/server";
+
 export default async function MessageInboxPage() {
+  const t = await getTranslations('admin');
   const messages = await prisma.message.findMany({
     orderBy: { createdAt: 'desc' }
   });
@@ -14,19 +17,19 @@ export default async function MessageInboxPage() {
     <div className="space-y-6">
       <SearchParamsToast
         messages={{
-          deleted: "Message deleted",
-          read: "Message marked as read",
+          deleted: t('messageDeleted'),
+          read: t('messageRead'),
         }}
       />
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Inbox</h1>
-        <p className="text-muted-foreground">{messages.length} total messages</p>
+        <h1 className="text-3xl font-bold">{t('inboxTitle')}</h1>
+        <p className="text-muted-foreground">{t('totalMessages', { count: messages.length })}</p>
       </div>
 
       <div className="space-y-4">
         {messages.length === 0 ? (
           <Card className="p-12 text-center border-dashed">
-            <p>Your inbox is empty. No messages yet!</p>
+            <p>{t('inboxEmpty')}</p>
           </Card>
         ) : (
           messages.map((msg) => (
@@ -36,10 +39,10 @@ export default async function MessageInboxPage() {
                   <div>
                     <CardTitle className="text-lg flex items-center gap-2">
                       {msg.isRead ? <MailOpen size={16} /> : <Mail size={16} className="text-primary" />}
-                      {msg.subject}
+                      {msg.subject || t('noSubject')}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      From: <span className="font-medium text-foreground">{msg.name}</span> ({msg.email})
+                      {t.rich('from', { name: msg.name })} ({msg.email})
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -48,20 +51,20 @@ export default async function MessageInboxPage() {
                         action={markAsRead.bind(null, msg.id)}
                         variant="outline"
                         size="sm"
-                        pendingLabel="Marking..."
+                        pendingLabel={t('marking')}
                       >
-                        Mark Read
+                        {t('markRead')}
                       </AdminActionForm>
                     )}
                     <AdminActionForm
                       action={deleteMessage.bind(null, msg.id)}
                       variant="destructive"
                       size="sm"
-                      confirmTitle="Delete message?"
-                      confirmDescription="This action cannot be undone."
-                      confirmLabel="Delete"
-                      pendingLabel="Deleting..."
-                      ariaLabel="Delete message"
+                      confirmTitle={t('deleteMessageConfirm')}
+                      confirmDescription={t('deleteConfirmDesc')}
+                      confirmLabel={t('delete')}
+                      pendingLabel={t('deleting')}
+                      ariaLabel={t('deleteMessage')}
                     >
                       <Trash2 size={16} />
                     </AdminActionForm>
@@ -71,7 +74,7 @@ export default async function MessageInboxPage() {
               <CardContent>
                 <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                 <p className="text-[10px] text-muted-foreground mt-4 italic">
-                  Received on: {new Date(msg.createdAt).toLocaleString()}
+                  {t('receivedOn', { date: new Date(msg.createdAt).toLocaleString() })}
                 </p>
               </CardContent>
             </Card>

@@ -4,8 +4,10 @@ import { ExperienceActions } from "./ExperienceActions";
 import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
 import { ExperienceDialog } from "./ExperienceDialog";
 import { Button } from "@/components/ui/button";
+import { getTranslations } from "next-intl/server";
 
 export default async function ExperienceAdmin() {
+  const t = await getTranslations('admin');
   const experiences = await prisma.experience.findMany({
     orderBy: { order: 'asc' }
   });
@@ -14,24 +16,24 @@ export default async function ExperienceAdmin() {
     <div className="space-y-6">
       <SearchParamsToast
         messages={{
-          deleted: "Experience deleted",
-          moved_up: "Moved up",
-          moved_down: "Moved down",
+          deleted: t('experienceDeleted'),
+          moved_up: t('movedUp'),
+          moved_down: t('movedDown'),
         }}
       />
-      <h1 className="text-3xl font-bold">Manage Experience</h1>
-      
+      <h1 className="text-3xl font-bold">{t('manageExperience')}</h1>
+
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Maintain your timeline entries.</p>
+        <p className="text-sm text-muted-foreground">{t('experienceDesc')}</p>
         <ExperienceDialog
-          trigger={<Button>Add Experience</Button>}
-          title="Add Experience"
-          description="Fill in the details and save."
+          trigger={<Button>{t('addExperience')}</Button>}
+          title={t('addExperience')}
+          description={t('experienceDialogDesc')}
         />
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Existing Experiences</h2>
+        <h2 className="text-2xl font-bold">{t('existingExperiences')}</h2>
         {experiences.map((exp, index) => (
           <Card key={exp.id}>
             <CardContent className="flex items-center justify-between p-4">

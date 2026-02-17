@@ -4,7 +4,7 @@ export async function getLandingData(locale: string) {
   const [projects, skills, testimonials, experiences, hobbies, resume] = await Promise.all([
     prisma.project.findMany({
       where: { isFeatured: true },
-      orderBy: { order: "asc" },
+      orderBy: { projectStartDate: "desc" },
       select: {
         id: true,
         titleEn: true,
@@ -17,6 +17,7 @@ export async function getLandingData(locale: string) {
         projectStartDate: true,
         projectEndDate: true,
         isActive: true,
+        imageUrl: true,
       },
     }),
     prisma.skill.findMany({

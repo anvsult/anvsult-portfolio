@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { Menu } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
+import { LanguageSwitch } from "@/components/ui/LanguageSwitch"
+
 type AdminNavItem = {
   href: string
   label: string
@@ -22,21 +25,23 @@ type AdminNavItem = {
 
 type AdminMobileNavProps = {
   items: AdminNavItem[]
+  locale: string
 }
 
-export function AdminMobileNav({ items }: AdminMobileNavProps) {
+export function AdminMobileNav({ items, locale }: AdminMobileNavProps) {
   const [open, setOpen] = useState(false)
+  const t = useTranslations('admin')
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Open admin navigation">
+        <Button variant="outline" size="icon" aria-label={t('ariaOpenAdminNav')}>
           <Menu size={18} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Admin Navigation</DialogTitle>
+          <DialogTitle>{t('adminNavTitle')}</DialogTitle>
         </DialogHeader>
         <nav className="mt-2 flex flex-col gap-2">
           {items.map((item) => (
@@ -48,6 +53,9 @@ export function AdminMobileNav({ items }: AdminMobileNavProps) {
             </Link>
           ))}
         </nav>
+        <div className="mt-4 border-t pt-4 flex justify-start">
+          <LanguageSwitch locale={locale} />
+        </div>
       </DialogContent>
     </Dialog>
   )

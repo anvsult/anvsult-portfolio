@@ -9,13 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/admin/SubmitButton";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+import { useState } from "react";
 
 export default function NewProjectPage() {
   const router = useRouter();
+  const [imageUrl, setImageUrl] = useState("");
+
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Add New Project</h1>
-      
+
       <form action={createProject}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* English Details */}
@@ -48,6 +52,29 @@ export default function NewProjectPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Image Upload */}
+        <Card className="mt-8">
+          <CardHeader><CardTitle>Project Image</CardTitle></CardHeader>
+          <CardContent>
+            <ImageUpload value={imageUrl} onChange={setImageUrl} label="Cover Image" />
+            <input type="hidden" name="imageUrl" value={imageUrl} />
+          </CardContent>
+        </Card>
+
+        <Card className="mt-8">
+          <CardHeader><CardTitle>Project Timeline</CardTitle></CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="projectStartDate">Start Date</Label>
+              <Input id="projectStartDate" name="projectStartDate" type="date" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="projectEndDate">End Date (Leave empty if Ongoing)</Label>
+              <Input id="projectEndDate" name="projectEndDate" type="date" />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Global Metadata */}
         <Card className="mt-8">

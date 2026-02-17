@@ -11,29 +11,22 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TestimonialForm } from "./TestimonialForm";
+import { useTranslations } from "next-intl";
 
-type TestimonialDialogProps = {
-  buttonLabel: string;
-  title: string;
-  description: string;
-};
+type TestimonialDialogProps = {};
 
-export function TestimonialDialog({
-  buttonLabel,
-  title,
-  description,
-}: TestimonialDialogProps) {
+export function TestimonialDialog({}: TestimonialDialogProps) {
   const [open, setOpen] = useState(false);
+  const t = useTranslations('Index');
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">{buttonLabel}</Button>
+        <Button variant="outline">{t('testimonialButtonLabel')}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogTitle>{t('testimonialTitle')}</DialogTitle>
         </DialogHeader>
         <TestimonialForm onSuccess={() => setOpen(false)} />
       </DialogContent>

@@ -26,6 +26,8 @@ export async function createProject(formData: FormData) {
   const githubLink = formData.get("githubLink") as string;
   const liveLink = formData.get("liveLink") as string;
   const isFeatured = formData.get("isFeatured") === "on";
+  const imageUrl = formData.get("imageUrl") as string | null;
+
   const projectStartDateRaw = formData.get("projectStartDate") as string;
   const projectEndDateRaw = formData.get("projectEndDate") as string | null;
   const projectStartDate = projectStartDateRaw ? new Date(projectStartDateRaw) : new Date();
@@ -50,6 +52,7 @@ export async function createProject(formData: FormData) {
       descriptionFr,
       slug,
       techStack: techStackString.split(",").map(s => s.trim()),
+      imageUrl,
       githubLink,
       liveLink,
       isFeatured,
@@ -61,7 +64,7 @@ export async function createProject(formData: FormData) {
   // Clear the cache so the public portfolio updates immediately
   revalidatePath(`/${locale}/admin/projects`, "layout");
   revalidatePath(`/${locale}/projects`, "layout");
-  
+
   redirect(`/${locale}/admin/projects?toast=created`);
 }
 
@@ -85,6 +88,12 @@ export async function updateProject(id: string, formData: FormData) {
   const githubLink = formData.get("githubLink") as string;
   const liveLink = formData.get("liveLink") as string;
   const isFeatured = formData.get("isFeatured") === "on";
+  const imageUrl = formData.get("imageUrl") as string | null;
+
+  const projectStartDateRaw = formData.get("projectStartDate") as string;
+  const projectEndDateRaw = formData.get("projectEndDate") as string | null;
+  const projectStartDate = projectStartDateRaw ? new Date(projectStartDateRaw) : undefined;
+  const projectEndDate = projectEndDateRaw ? new Date(projectEndDateRaw) : null;
 
   if (!titleEn || !titleFr) throw new Error("Titles are required");
 
@@ -101,9 +110,12 @@ export async function updateProject(id: string, formData: FormData) {
       descriptionFr,
       slug,
       techStack: techStackString ? techStackString.split(",").map(s => s.trim()) : [],
+      imageUrl,
       githubLink,
       liveLink,
       isFeatured,
+      projectStartDate,
+      projectEndDate,
     },
   });
 

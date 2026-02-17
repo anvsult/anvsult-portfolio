@@ -10,8 +10,11 @@ type ExperienceActionsProps = {
   isLast: boolean
 }
 
+import { useTranslations } from "next-intl"
+
 export function ExperienceActions({ id, order, isFirst, isLast }: ExperienceActionsProps) {
   const disabledStyles = "pointer-events-none opacity-50"
+  const t = useTranslations('admin')
 
   return (
     <div className="flex gap-2">
@@ -20,8 +23,8 @@ export function ExperienceActions({ id, order, isFirst, isLast }: ExperienceActi
         variant="outline"
         size="icon"
         disabled={isFirst}
-        pendingLabel="Moving..."
-        ariaLabel="Move up"
+        pendingLabel={t('moving')}
+        ariaLabel={t('moveUp')}
         buttonClassName={isFirst ? disabledStyles : undefined}
       >
         <ArrowUp size={16} />
@@ -31,8 +34,8 @@ export function ExperienceActions({ id, order, isFirst, isLast }: ExperienceActi
         variant="outline"
         size="icon"
         disabled={isLast}
-        pendingLabel="Moving..."
-        ariaLabel="Move down"
+        pendingLabel={t('moving')}
+        ariaLabel={t('moveDown')}
         buttonClassName={isLast ? disabledStyles : undefined}
       >
         <ArrowDown size={16} />
@@ -41,11 +44,11 @@ export function ExperienceActions({ id, order, isFirst, isLast }: ExperienceActi
         action={deleteExperience.bind(null, id)}
         variant="destructive"
         size="icon"
-        confirmTitle="Delete experience?"
-        confirmDescription="This action cannot be undone."
-        confirmLabel="Delete"
-        pendingLabel="Deleting..."
-        ariaLabel="Delete experience"
+        confirmTitle={t('deleteExperienceConfirm')}
+        confirmDescription={t('deleteConfirmDesc')}
+        confirmLabel={t('delete')}
+        pendingLabel={t('deleting')}
+        ariaLabel={t('deleteExperience')}
       >
         <Trash2 size={16} />
       </AdminActionForm>

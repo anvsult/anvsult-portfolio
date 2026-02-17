@@ -1,0 +1,11 @@
+{
+  "yourName": "Your Name",
+  "yourEmail": "Your Email",
+  "subject": "Subject",
+  "howCanIHelp": "How can I help you?",
+  "sending": "Sending...",
+  "sendMessage": "Send Message",
+  "messageSent": "Message sent!",
+  "messageSentDesc": "I will get back to you soon.",
+  "error": "Error"
+}

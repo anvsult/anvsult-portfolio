@@ -7,10 +7,12 @@ import * as Icons from "lucide-react";
 import { Pencil, Trash2 } from "lucide-react";
 import { AdminActionForm } from "@/components/admin/AdminActionForm";
 import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
+import { getTranslations } from "next-intl/server";
 
 type LucideIconName = keyof typeof Icons;
 
 export default async function HobbiesAdmin() {
+  const t = await getTranslations('hobbies');
   const hobbies = await prisma.hobby.findMany({
     orderBy: { order: 'asc' }
   });
@@ -19,18 +21,17 @@ export default async function HobbiesAdmin() {
     <div className="space-y-6">
       <SearchParamsToast
         messages={{
-          deleted: "Hobby deleted",
+          deleted: t('hobbyDeleted'),
         }}
       />
-      <h1 className="text-3xl font-bold">Hobbies</h1>
-      
+      <h1 className="text-3xl font-bold">{t('hobbies')}</h1>
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Manage Hobbies</h2>
+        <h2 className="text-xl font-semibold">{t('manageHobbies')}</h2>
         <HobbyDialog
-          trigger={<Button variant="default">Add New Hobby</Button>}
-          title="Add New Hobby"
-          description="Fill in the details and save."
-          submitLabel="Add Hobby"
+          trigger={<Button variant="default">{t('addNewHobby')}</Button>}
+          title={t('addNewHobbyTitle')}
+          description={t('addNewHobbyDesc')}
+          submitLabel={t('addHobby')}
         />
       </div>
 
@@ -57,8 +58,8 @@ export default async function HobbiesAdmin() {
                         <Pencil size={16} />
                       </Button>
                     }
-                    title="Edit Hobby"
-                    description="Update the hobby details and save."
+                    title={t('editHobby')}
+                    description={t('editHobbyDesc')}
                     initial={{
                       id: hobby.id,
                       nameEn: hobby.nameEn,
@@ -67,17 +68,17 @@ export default async function HobbiesAdmin() {
                       descriptionFr: hobby.descriptionFr,
                       iconName: hobby.iconName,
                     }}
-                    submitLabel="Save Changes"
+                    submitLabel={t('saveChanges')}
                   />
                   <AdminActionForm
                     action={deleteHobby.bind(null, hobby.id)}
                     variant="destructive"
                     size="icon"
-                    confirmTitle="Delete hobby?"
-                    confirmDescription={`This will remove \"${hobby.nameEn}\" permanently.`}
-                    confirmLabel="Delete"
-                    pendingLabel="Deleting..."
-                    ariaLabel={`Delete ${hobby.nameEn}`}
+                    confirmTitle={t('deleteConfirmTitle')}
+                    confirmDescription={t('deleteConfirmDesc', { name: hobby.nameEn })}
+                    confirmLabel={t('deleteConfirmLabel')}
+                    pendingLabel={t('deletePending')}
+                    ariaLabel={t('ariaDelete', { name: hobby.nameEn })}
                   >
                     <Trash2 size={16} />
                   </AdminActionForm>

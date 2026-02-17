@@ -1,6 +1,20 @@
 {
   "Index": {
     "title": "Software Developer",
-    "contact": "Contact Me"
+    "contact": "Contact Me",
+    "aboutMeDescription": "I am a passionate software developer with a love for creating elegant and efficient solutions. I am always eager to learn new technologies and take on new challenges.",
+    "viewResumeButton": "View Resume",
+    "testimonialButtonLabel": "Leave a Testimonial",
+    "testimonialTitle": "Leave a Testimonial",
+    "testimonialDescription": "Thank you for your feedback! It will appear on the site after a quick review.",
+    "featuredProjects": "Featured Projects",
+    "myJourney": "My Journey",
+    "skills": "Skills",
+    "hobbies": "Hobbies",
+    "whatOthersSay": "What Others Say",
+    "myResume": "My Resume",
+    "latestVersion": "Latest Version",
+    "resumeNotAvailable": "Resume not available yet.",
+    "getInTouch": "Get in Touch"
   }
 }

@@ -1,7 +1,8 @@
 'use server'
 
-import { prisma } from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { sendMail } from "@/lib/mail";
+import { headers } from "next/headers";
 
 export async function sendMessage(formData: FormData) {
   const name = formData.get("name") as string;
@@ -11,6 +12,7 @@ export async function sendMessage(formData: FormData) {
   const website = formData.get("website") as string | null;
 
   if (website) {
+    // Honey pot trap
     return { error: "Failed to send message. Please try again." };
   }
 
@@ -18,12 +20,20 @@ export async function sendMessage(formData: FormData) {
     return { error: "Please fill in all required fields." };
   }
 
-  try {
-    await prisma.message.create({
-      data: { name, email, subject, content },
-    });
+  // Rate limiting
+  const ip = (await headers()).get("x-forwarded-for") || "unknown";
+  const rateLimitResult = await checkRateLimit(ip);
+  if (rateLimitResult.error) {
+    return { error: rateLimitResult.error };
+  }
 
-    revalidatePath("/admin/messages"); // Update admin view
+  try {
+    const mailResult = await sendMail({ name, email, subject, content });
+
+    if (mailResult.error) {
+      return { error: mailResult.error };
+    }
+
     return { success: true };
   } catch (e) {
     return { error: "Failed to send message. Please try again." };

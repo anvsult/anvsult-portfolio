@@ -7,16 +7,21 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
+
+import { ProjectDetailsDialog } from "./ProjectDetailsDialog";
 
 type ProjectTimelineItem = {
   id: string;
   title: string;
+  description: string;
   techStack: string[];
   projectStartDate?: Date | string | null;
   projectEndDate?: Date | string | null;
   isActive?: boolean | null;
   githubLink?: string | null;
   liveLink?: string | null;
+  imageUrl?: string | null;
 };
 
 type FeaturedProjectsTimelineProps = {
@@ -48,7 +53,15 @@ function formatRange(project: ProjectTimelineItem, locale?: string) {
   const end = toDate(project.projectEndDate);
 
   const startLabel = start ? formatMonthYear(start, locale) : "Unknown";
-  const endLabel = project.isActive || !end ? "Present" : formatMonthYear(end, locale);
+  let endLabel: string;
+
+  if (end) {
+    endLabel = formatMonthYear(end, locale);
+  } else if (project.isActive) {
+    endLabel = "Present";
+  } else {
+    endLabel = "Unknown";
+  }
 
   return `${startLabel} - ${endLabel}`;
 }
@@ -60,6 +73,7 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
   const [scrollLength, setScrollLength] = useState(0);
   const [sectionHeight, setSectionHeight] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<ProjectTimelineItem | null>(null);
 
   const sortedProjects = useMemo(() => {
     return [...projects].sort((a, b) => {
@@ -136,25 +150,40 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
           const motionProps = shouldReduceMotion
             ? { initial: false }
             : {
-                initial: { opacity: 0, y: isAbove ? -24 : 24 },
-                whileInView: { opacity: 1, y: 0 },
-                transition: { duration: 0.45, ease: easeOut },
-                viewport: { once: true, amount: 0.4 },
-              };
+              initial: { opacity: 0, y: isAbove ? -24 : 24 },
+              whileInView: { opacity: 1, y: 0 },
+              transition: { duration: 0.45, ease: easeOut },
+              viewport: { once: true, amount: 0.4 },
+            };
 
           return (
             <div
               key={project.id}
-              className="relative flex h-full min-w-[260px] max-w-[320px] flex-col items-center"
+              className="relative flex h-full min-w-[400px] max-w-[500px] flex-col items-center"
             >
               <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/80" />
               <motion.article
                 {...motionProps}
+                onClick={() => setSelectedProject(project)}
                 className={cn(
-                  "w-full rounded-2xl border border-border/60 bg-background/70 p-5 shadow-sm backdrop-blur",
+                  "w-full rounded-2xl border border-border/60 bg-background/70 p-5 shadow-sm backdrop-blur cursor-pointer hover:border-border/80 transition-colors",
                   isAbove ? "mb-auto -translate-y-6" : "mt-auto translate-y-6",
                 )}
               >
+                {/* Image Placeholder */}
+                <div className="w-full h-56 mb-4 bg-muted/30 rounded-lg flex items-center justify-center border border-border/50 relative overflow-hidden">
+                  {project.imageUrl ? (
+                    <Image
+                      src={project.imageUrl}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider opacity-50">Project Image</span>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>{formatRange(project, locale)}</span>
@@ -210,6 +239,15 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
       >
         {renderTrack(enableDesktopScroll)}
       </div>
-    </section>
+
+      <ProjectDetailsDialog
+        isOpen={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+        project={selectedProject ? {
+          ...selectedProject,
+          dateRange: formatRange(selectedProject, locale)
+        } : null}
+      />
+    </section >
   );
 }

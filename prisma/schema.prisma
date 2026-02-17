@@ -94,15 +94,7 @@ model Resume {
   uploadedAt DateTime @default(now())
 }
 
-model Message {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  subject   String?
-  content   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-}
+
 
 model Testimonial {
   id         String   @id @default(cuid())

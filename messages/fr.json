@@ -1,6 +1,20 @@
 {
   "Index": {
     "title": "Développeur Logiciel",
-    "contact": "Me Contacter"
+    "contact": "Me Contacter",
+    "aboutMeDescription": "Je suis un développeur de logiciels passionné avec un amour pour la création de solutions élégantes et efficaces. Je suis toujours désireux d'apprendre de nouvelles technologies et de relever de nouveaux défis.",
+    "viewResumeButton": "Voir le CV",
+    "testimonialButtonLabel": "Laisser un témoignage",
+    "testimonialTitle": "Laisser un témoignage",
+    "testimonialDescription": "Merci pour votre retour! Il apparaitra sur le site apres une courte revision.",
+    "featuredProjects": "Projets Vedettes",
+    "myJourney": "Mon Parcours",
+    "skills": "Compétences",
+    "hobbies": "Mes Passions",
+    "whatOthersSay": "Ce que les autres disent",
+    "myResume": "Mon CV",
+    "latestVersion": "Dernière Version",
+    "resumeNotAvailable": "CV pas encore disponible.",
+    "getInTouch": "Contactez-moi"
   }
 }

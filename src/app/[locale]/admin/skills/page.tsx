@@ -5,8 +5,10 @@ import { AdminActionForm } from "@/components/admin/AdminActionForm";
 import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
 import { SkillDialog } from "./SkillDialog";
 import { Button } from "@/components/ui/button";
+import { getTranslations } from "next-intl/server";
 
 export default async function AdminSkillsPage() {
+  const t = await getTranslations('admin');
   const skills = await prisma.skill.findMany({
     orderBy: { category: 'asc' }
   });
@@ -15,17 +17,17 @@ export default async function AdminSkillsPage() {
     <div className="space-y-8">
       <SearchParamsToast
         messages={{
-          deleted: "Skill deleted",
+          deleted: t('skillDeleted'),
         }}
       />
-      <h1 className="text-3xl font-bold">Manage Skills</h1>
+      <h1 className="text-3xl font-bold">{t('manageSkills')}</h1>
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Create and manage skill tags.</p>
+        <p className="text-sm text-muted-foreground">{t('skillsDesc')}</p>
         <SkillDialog
-          trigger={<Button>Add Skill</Button>}
-          title="Add Skill"
-          description="Fill in the details and save."
+          trigger={<Button>{t('addSkill')}</Button>}
+          title={t('addSkill')}
+          description={t('skillDialogDesc')}
         />
       </div>
 
@@ -44,11 +46,11 @@ export default async function AdminSkillsPage() {
               action={deleteSkill.bind(null, skill.id)}
               variant="destructive"
               size="icon-sm"
-              ariaLabel={`Delete ${skill.nameEn}`}
-              confirmTitle="Delete skill?"
-              confirmDescription={`This will remove \"${skill.nameEn}\" permanently.`}
-              confirmLabel="Delete"
-              pendingLabel="Deleting..."
+              ariaLabel={t('ariaDelete', { title: skill.nameEn })}
+              confirmTitle={t('deleteSkillConfirm')}
+              confirmDescription={t('deleteSkillDesc', { name: skill.nameEn })}
+              confirmLabel={t('delete')}
+              pendingLabel={t('deleting')}
             >
               <Trash2 size={16} />
             </AdminActionForm>
