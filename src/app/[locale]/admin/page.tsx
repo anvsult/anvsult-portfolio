@@ -3,11 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Briefcase, Star, Code, ArrowUpRight } from "lucide-react";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function AdminDashboard() {
   // Fetch counts for a quick overview
   const locale = await getLocale();
+  const t = await getTranslations("admin");
   const [
     projectCount,
     skillCount,
@@ -32,16 +33,16 @@ export default async function AdminDashboard() {
   ]);
 
   const stats = [
-    { label: "Projects", value: projectCount, icon: <Briefcase className="text-blue-500" /> },
-    { label: "Skills", value: skillCount, icon: <Code className="text-purple-500" /> },
-    { label: "Pending Testimonials", value: testimonialCount, icon: <Star className="text-yellow-500" /> },
+    { label: t("projects"), value: projectCount, icon: <Briefcase className="text-blue-500" /> },
+    { label: t("skills"), value: skillCount, icon: <Code className="text-purple-500" /> },
+    { label: t("pendingTestimonialsTitle"), value: testimonialCount, icon: <Star className="text-yellow-500" /> },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">Command Center</h1>
-        <p className="text-muted-foreground">Real-time overview of content, approvals.</p>
+        <h1 className="text-3xl font-bold">{t("commandCenter")}</h1>
+        <p className="text-muted-foreground">{t("overview")}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-12">
@@ -60,19 +61,19 @@ export default async function AdminDashboard() {
         <Card className="md:col-span-2 lg:col-span-6">
           <CardHeader className="flex items-center justify-between gap-2">
             <div>
-              <CardTitle>Pending Testimonials</CardTitle>
-              <p className="text-sm text-muted-foreground">Awaiting approval.</p>
+              <CardTitle>{t("pendingTestimonials")}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t("awaitingApproval")}</p>
             </div>
             <Link href={`/${locale}/admin/testimonials`}>
               <Button variant="outline" size="sm" className="gap-1">
-                Review <ArrowUpRight size={14} />
+                {t("review")} <ArrowUpRight size={14} />
               </Button>
             </Link>
           </CardHeader>
           <CardContent className="space-y-3">
             {pendingTestimonials.length === 0 ? (
               <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                Nothing pending right now.
+                {t("nothingPending")}
               </div>
             ) : (
               pendingTestimonials.map((t) => (
@@ -88,19 +89,19 @@ export default async function AdminDashboard() {
         <Card className="md:col-span-2 lg:col-span-6">
           <CardHeader className="flex items-center justify-between gap-2">
             <div>
-              <CardTitle>Recent Projects</CardTitle>
-              <p className="text-sm text-muted-foreground">Latest additions and edits.</p>
+              <CardTitle>{t("recentProjects")}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t("latestAdditions")}</p>
             </div>
             <Link href={`/${locale}/admin/projects`}>
               <Button variant="outline" size="sm" className="gap-1">
-                Manage <ArrowUpRight size={14} />
+                {t("manage")} <ArrowUpRight size={14} />
               </Button>
             </Link>
           </CardHeader>
           <CardContent className="space-y-3">
             {recentProjects.length === 0 ? (
               <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                No projects yet. Add your first project.
+                {t("noProjects")}
               </div>
             ) : (
               recentProjects.map((project) => (
@@ -117,23 +118,23 @@ export default async function AdminDashboard() {
 
         <Card className="md:col-span-4 lg:col-span-12">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <p className="text-sm text-muted-foreground">Jump straight into content updates.</p>
+            <CardTitle>{t("quickActions")}</CardTitle>
+            <p className="text-sm text-muted-foreground">{t("jumpToContent")}</p>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <Link href={`/${locale}/admin/projects/new`}>
               <Button className="w-full justify-between">
-                Create Project <ArrowUpRight size={14} />
+                {t("createProject")} <ArrowUpRight size={14} />
               </Button>
             </Link>
             <Link href={`/${locale}/admin/skills`}>
               <Button variant="outline" className="w-full justify-between">
-                Add Skills <ArrowUpRight size={14} />
+                {t("addSkills")} <ArrowUpRight size={14} />
               </Button>
             </Link>
             <Link href={`/${locale}/admin/experience`}>
               <Button variant="outline" className="w-full justify-between">
-                Update Experience <ArrowUpRight size={14} />
+                {t("updateExperience")} <ArrowUpRight size={14} />
               </Button>
             </Link>
           </CardContent>

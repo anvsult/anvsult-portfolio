@@ -9,19 +9,21 @@ import { Loader2, FileText, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateResume } from "@/app/[locale]/admin/resume/actions";
 import { useFormStatus } from "react-dom";
+import { useTranslations } from "next-intl";
 
 // Helper for submit button
 function SaveButton() {
   const { pending } = useFormStatus();
+  const t = useTranslations('admin');
   return (
     <Button type="submit" disabled={pending}>
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Saving...
+          {t('saving')}
         </>
       ) : (
-        "Save Changes"
+        t('saveChanges')
       )}
     </Button>
   );
@@ -43,6 +45,7 @@ export function ResumeUploadForm({ locale, label, existingResume }: ResumeUpload
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState(existingResume?.fileUrl || "");
   const [fileName, setFileName] = useState(existingResume?.fileName || "");
+  const t = useTranslations('admin');
 
   // We wrap the server action to handle the result
   const [state, formAction] = useActionState(updateResume, {});
@@ -80,10 +83,10 @@ export function ResumeUploadForm({ locale, label, existingResume }: ResumeUpload
 
         setFileUrl(publicUrl);
         setFileName(selectedFile.name);
-        toast.success("File uploaded to storage");
+        toast.success(t('fileUploaded'));
       } catch (error) {
         console.error(error);
-        toast.error("Failed to upload file to storage");
+        toast.error(t('fileUploadFailed'));
       } finally {
         setUploading(false);
       }
@@ -101,16 +104,16 @@ export function ResumeUploadForm({ locale, label, existingResume }: ResumeUpload
           <h3 className="font-semibold">{label}</h3>
           {existingResume && (
             <p className="text-sm text-muted-foreground">
-              Current: {existingResume.fileName} (v{existingResume.version})
+              {t('currentResume', { fileName: existingResume.fileName, version: existingResume.version })}
               <br />
-              Updated: {new Date(existingResume.uploadedAt).toLocaleDateString()}
+              {t('updatedAt', { date: new Date(existingResume.uploadedAt).toLocaleDateString() })}
             </p>
           )}
         </div>
         {existingResume && (
           <Button variant="outline" size="sm" asChild>
             <a href={existingResume.fileUrl} target="_blank" rel="noopener noreferrer">
-              <FileText className="mr-2 h-4 w-4" /> View
+              <FileText className="mr-2 h-4 w-4" /> {t('view')}
             </a>
           </Button>
         )}
@@ -118,7 +121,7 @@ export function ResumeUploadForm({ locale, label, existingResume }: ResumeUpload
 
       <div className="grid gap-4 py-4">
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor={`file-${locale}`}>Upload New PDF</Label>
+          <Label htmlFor={`file-${locale}`}>{t('uploadNewPdf')}</Label>
           <Input
             id={`file-${locale}`}
             type="file"
@@ -126,17 +129,17 @@ export function ResumeUploadForm({ locale, label, existingResume }: ResumeUpload
             onChange={handleFileChange}
             disabled={uploading}
           />
-          {uploading && <p className="text-xs text-muted-foreground animate-pulse">Uploading to cloud...</p>}
-          {file && !uploading && <p className="text-xs text-green-600 flex items-center"><CheckCircle2 className="h-3 w-3 mr-1" /> Ready to save</p>}
+          {uploading && <p className="text-xs text-muted-foreground animate-pulse">{t('uploadingCloud')}</p>}
+          {file && !uploading && <p className="text-xs text-green-600 flex items-center"><CheckCircle2 className="h-3 w-3 mr-1" /> {t('readyToSave')}</p>}
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor={`version-${locale}`}>Version</Label>
+          <Label htmlFor={`version-${locale}`}>{t('version')}</Label>
           <Input
             id={`version-${locale}`}
             name="version"
             defaultValue={existingResume?.version || "1.0"}
-            placeholder="e.g. 2.0"
+            placeholder={t('versionPlaceholder')}
           />
         </div>
       </div>

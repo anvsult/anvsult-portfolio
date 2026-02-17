@@ -13,7 +13,7 @@ import { getTranslations } from "next-intl/server";
 type LucideIconName = keyof typeof Icons;
 
 export default async function HobbiesAdmin() {
-  const t = await getTranslations('hobbies');
+  const t = await getTranslations('admin');
   const hobbies = await prisma.hobby.findMany({
     orderBy: { order: 'asc' }
   });
@@ -55,12 +55,12 @@ export default async function HobbiesAdmin() {
                 <div className="flex gap-2">
                   <HobbyDialog
                     trigger={
-                      <Button variant="outline" size="icon">
+                      <Button variant="outline" size="icon" aria-label={t('ariaEdit', { title: hobby.nameEn })}>
                         <Pencil size={16} />
                       </Button>
                     }
-                    title="Edit Hobby"
-                    description="Update the hobby details and save."
+                    title={t('editHobby')}
+                    description={t('editHobbyDesc')}
                     initial={{
                       id: hobby.id,
                       nameEn: hobby.nameEn,
@@ -69,17 +69,17 @@ export default async function HobbiesAdmin() {
                       descriptionFr: hobby.descriptionFr,
                       iconName: hobby.iconName,
                     }}
-                    submitLabel="Save Changes"
+                    submitLabel={t('saveChanges')}
                   />
                   <AdminActionForm
                     action={deleteHobby.bind(null, hobby.id)}
                     variant="destructive"
                     size="icon"
-                    confirmTitle="Delete hobby?"
-                    confirmDescription={`This will remove \"${hobby.nameEn}\" permanently.`}
-                    confirmLabel="Delete"
-                    pendingLabel="Deleting..."
-                    ariaLabel={`Delete ${hobby.nameEn}`}
+                    confirmTitle={t('deleteHobbyConfirmTitle')}
+                    confirmDescription={t('deleteHobbyConfirmDesc', { name: hobby.nameEn })}
+                    confirmLabel={t('delete')}
+                    pendingLabel={t('deleting')}
+                    ariaLabel={t('ariaDelete', { title: hobby.nameEn })}
                   >
                     <Trash2 size={16} />
                   </AdminActionForm>

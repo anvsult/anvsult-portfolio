@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Loader2, Upload, ImageIcon, X, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 type ImageUploadProps = {
   value?: string | null;
@@ -19,12 +20,14 @@ type ImageUploadProps = {
 export function ImageUpload({
   value,
   onChange,
-  label = "Project Image",
+  label,
   bucket = process.env.NEXT_PUBLIC_PROJECTS_BUCKET || "projects"
 }: ImageUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(value || null);
+  const t = useTranslations('admin');
+  const labelText = label || t('projectImage');
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -61,10 +64,10 @@ export function ImageUpload({
 
         setPreview(publicUrl);
         onChange(publicUrl);
-        toast.success("Image uploaded successfully");
+        toast.success(t('imageUploaded'));
       } catch (error: any) {
         console.error("ImageUpload Error:", error);
-        toast.error(`Upload failed: ${error.message || "Unknown error"}`);
+        toast.error(t('uploadFailed', { error: error.message || "Unknown error" }));
       } finally {
         setUploading(false);
       }
@@ -80,10 +83,10 @@ export function ImageUpload({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label>{label}</Label>
+        <Label>{labelText}</Label>
         {preview && (
           <Button variant="ghost" size="sm" onClick={handleRemove} className="text-destructive h-8 px-2">
-            <X className="mr-2 h-4 w-4" /> Remove
+            <X className="mr-2 h-4 w-4" /> {t('remove')}
           </Button>
         )}
       </div>
@@ -104,10 +107,10 @@ export function ImageUpload({
               <ImageIcon className="h-8 w-8 text-muted-foreground mx-auto" />
             )}
             <div className="text-sm font-medium">
-              {uploading ? "Uploading..." : "Drag & drop or click to upload"}
+              {uploading ? t('uploading') : t('dragAndDrop')}
             </div>
             <div className="text-xs text-muted-foreground">
-              PNG, JPG, WEBP up to 5MB
+              {t('imageFormats')}
             </div>
           </div>
         </div>

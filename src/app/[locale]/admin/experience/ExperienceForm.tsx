@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type ExperienceFormProps = {
   onSuccess?: () => void
@@ -13,6 +14,7 @@ type ExperienceFormProps = {
 
 export function ExperienceForm({ onSuccess }: ExperienceFormProps) {
   const [loading, setLoading] = useState(false);
+  const t = useTranslations('admin');
 
   async function handleAction(formData: FormData) {
     setLoading(true);
@@ -20,34 +22,34 @@ export function ExperienceForm({ onSuccess }: ExperienceFormProps) {
     setLoading(false);
 
     if (res.success) {
-      toast.success("Experience added!");
+      toast.success(t('experienceAdded'));
       (document.getElementById("experience-form") as HTMLFormElement).reset();
       onSuccess?.();
     } else {
-      toast.error("Error", { description: res.error });
+      toast.error(t('error'), { description: res.error });
     }
   }
 
   return (
     <form id="experience-form" action={handleAction} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <Input name="companyEn" placeholder="Company (English)" required />
-        <Input name="companyFr" placeholder="Company (French)" required />
+        <Input name="companyEn" placeholder={t('companyEn')} required />
+        <Input name="companyFr" placeholder={t('companyFr')} required />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Input name="positionEn" placeholder="Position (English)" required />
-        <Input name="positionFr" placeholder="Position (French)" required />
+        <Input name="positionEn" placeholder={t('positionEn')} required />
+        <Input name="positionFr" placeholder={t('positionFr')} required />
       </div>
-      <Input name="location" placeholder="Location" />
+      <Input name="location" placeholder={t('location')} />
       <div className="grid grid-cols-2 gap-4">
         <Input name="startDate" type="date" required />
         <Input name="endDate" type="date" />
       </div>
-      <Input name="technologies" placeholder="Technologies (comma-separated)" />
-      <Textarea name="descriptionEn" placeholder="Description (English)" />
-      <Textarea name="descriptionFr" placeholder="Description (French)" />
+      <Input name="technologies" placeholder={t('technologies')} />
+      <Textarea name="descriptionEn" placeholder={t('descriptionEn')} />
+      <Textarea name="descriptionFr" placeholder={t('descriptionFr')} />
       <Button type="submit" disabled={loading}>
-        {loading ? "Adding..." : "Add Experience"}
+        {loading ? t('adding') : t('addExperience')}
       </Button>
     </form>
   );

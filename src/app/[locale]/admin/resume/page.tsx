@@ -14,20 +14,20 @@ export default async function AdminResumePage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">Resume Management</h1>
-        <p className="text-muted-foreground">Upload and manage your CVs for each language.</p>
+        <h1 className="text-3xl font-bold">{t('resumeManagement')}</h1>
+        <p className="text-muted-foreground">{t('resumeManagementDesc')}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>English Resume</CardTitle>
-            <CardDescription>Main version for international visitors</CardDescription>
+            <CardTitle>{t('resumeEn')}</CardTitle>
+            <CardDescription>{t('resumeEnDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResumeUploadForm
               locale="en"
-              label="English (EN)"
+              label={t('englishLabel')}
               existingResume={resumeEn}
             />
           </CardContent>
@@ -35,13 +35,13 @@ export default async function AdminResumePage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>French Resume</CardTitle>
-            <CardDescription>Version pour les visiteurs francophones</CardDescription>
+            <CardTitle>{t('resumeFr')}</CardTitle>
+            <CardDescription>{t('resumeFrDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResumeUploadForm
               locale="fr"
-              label="Français (FR)"
+              label={t('frenchLabel')}
               existingResume={resumeFr}
             />
           </CardContent>

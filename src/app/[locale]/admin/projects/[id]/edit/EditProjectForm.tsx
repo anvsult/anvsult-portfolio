@@ -11,6 +11,7 @@ import { ImageUpload } from "@/components/admin/ImageUpload";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 type Project = {
   id: string;
@@ -30,6 +31,7 @@ type Project = {
 export function EditProjectForm({ project }: { project: Project }) {
   const [imageUrl, setImageUrl] = useState(project.imageUrl || "");
   const router = useRouter();
+  const t = useTranslations('admin');
 
   return (
     <form action={updateProject.bind(null, project.id)}>
@@ -37,28 +39,28 @@ export function EditProjectForm({ project }: { project: Project }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card>
-          <CardHeader><CardTitle>English Content</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t('englishContent')}</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="titleEn">Project Title (EN)</Label>
+              <Label htmlFor="titleEn">{t('projectTitleEn')}</Label>
               <Input id="titleEn" name="titleEn" defaultValue={project.titleEn} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="descriptionEn">Description (EN)</Label>
+              <Label htmlFor="descriptionEn">{t('descriptionEn')}</Label>
               <Textarea id="descriptionEn" name="descriptionEn" rows={5} defaultValue={project.descriptionEn ?? ""} />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader><CardTitle>French Content</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t('frenchContent')}</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="titleFr">Titre du Projet (FR)</Label>
+              <Label htmlFor="titleFr">{t('projectTitleFr')}</Label>
               <Input id="titleFr" name="titleFr" defaultValue={project.titleFr} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="descriptionFr">Description (FR)</Label>
+              <Label htmlFor="descriptionFr">{t('descriptionFr')}</Label>
               <Textarea id="descriptionFr" name="descriptionFr" rows={5} defaultValue={project.descriptionFr ?? ""} />
             </div>
           </CardContent>
@@ -67,17 +69,17 @@ export function EditProjectForm({ project }: { project: Project }) {
 
       {/* Image Upload */}
       <Card className="mt-8">
-        <CardHeader><CardTitle>Project Image</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{t('projectImage')}</CardTitle></CardHeader>
         <CardContent>
-          <ImageUpload value={imageUrl} onChange={setImageUrl} label="Cover Image" />
+          <ImageUpload value={imageUrl} onChange={setImageUrl} label={t('coverImage')} />
         </CardContent>
       </Card>
 
       <Card className="mt-8">
-        <CardHeader><CardTitle>Project Timeline</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{t('projectTimeline')}</CardTitle></CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="projectStartDate">Start Date</Label>
+            <Label htmlFor="projectStartDate">{t('startDate')}</Label>
             <Input
               id="projectStartDate"
               name="projectStartDate"
@@ -87,7 +89,7 @@ export function EditProjectForm({ project }: { project: Project }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="projectEndDate">End Date (Leave empty if Ongoing)</Label>
+            <Label htmlFor="projectEndDate">{t('endDate')}</Label>
             <Input
               id="projectEndDate"
               name="projectEndDate"
@@ -99,18 +101,18 @@ export function EditProjectForm({ project }: { project: Project }) {
       </Card>
 
       <Card className="mt-8">
-        <CardHeader><CardTitle>Tech & Links</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{t('techAndLinks')}</CardTitle></CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="techStack">Tech Stack (comma separated)</Label>
+            <Label htmlFor="techStack">{t('techStackLabel')}</Label>
             <Input id="techStack" name="techStack" defaultValue={project.techStack.join(", ")} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="githubLink">GitHub URL</Label>
+            <Label htmlFor="githubLink">{t('githubUrl')}</Label>
             <Input id="githubLink" name="githubLink" type="url" defaultValue={project.githubLink ?? ""} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="liveLink">Live Site URL</Label>
+            <Label htmlFor="liveLink">{t('liveSiteUrl')}</Label>
             <Input id="liveLink" name="liveLink" type="url" defaultValue={project.liveLink ?? ""} />
           </div>
         </CardContent>
@@ -121,18 +123,18 @@ export function EditProjectForm({ project }: { project: Project }) {
           <div className="flex items-center space-x-3">
             <Checkbox id="isFeatured" name="isFeatured" defaultChecked={project.isFeatured} />
             <Label htmlFor="isFeatured" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
-              Feature this project on homepage
+              {t('featureProject')}
             </Label>
           </div>
           <p className="text-sm text-muted-foreground mt-2 ml-7">
-            Featured projects will be prominently displayed on the main portfolio page
+            {t('featureProjectDesc')}
           </p>
         </CardContent>
       </Card>
 
       <div className="mt-8 flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-        <SubmitButton type="submit" pendingLabel="Saving...">Save Changes</SubmitButton>
+        <Button type="button" variant="outline" onClick={() => router.back()}>{t('cancel')}</Button>
+        <SubmitButton type="submit" pendingLabel={t('saving')}>{t('saveChanges')}</SubmitButton>
       </div>
     </form >
   );
