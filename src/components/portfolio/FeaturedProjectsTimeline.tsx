@@ -266,13 +266,71 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
     </div>
   );
 
+  const renderMobileList = () => (
+    <div className="flex flex-col gap-8 pb-12 px-4">
+      {sortedProjects.map((project, index) => (
+        <motion.article
+          key={project.id}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: index * 0.1 }}
+          viewport={{ once: true, margin: "-50px" }}
+          onClick={() => setSelectedProject(project)}
+          className="group relative w-full rounded-2xl border border-border/60 bg-background/50 p-6 shadow-sm backdrop-blur-md cursor-pointer hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+        >
+          {/* Image Placeholder */}
+          <div className="w-full h-48 mb-5 bg-muted/30 rounded-xl flex items-center justify-center border border-border/30 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500">
+            {project.imageUrl ? (
+              <Image
+                src={project.imageUrl}
+                alt={project.title}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <span className="text-muted-foreground text-xs uppercase tracking-wider opacity-50">Project Image</span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground mb-2">
+            <Calendar className="h-3.5 w-3.5" />
+            <span>{formatRange(project, locale)}</span>
+          </div>
+
+          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{project.title}</h3>
+
+          <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{project.description}</p>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {project.techStack.slice(0, 4).map((tech) => (
+              <Badge key={`${project.id}-${tech}`} variant="outline" className="text-[10px] bg-background/50">
+                {tech}
+              </Badge>
+            ))}
+            {project.techStack.length > 4 && (
+              <Badge variant="outline" className="text-[10px] bg-background/50">
+                +{project.techStack.length - 4}
+              </Badge>
+            )}
+          </div>
+        </motion.article>
+      ))}
+    </div>
+  );
+
   return (
     <section
       ref={sectionRef}
       className={cn("relative", className)}
       style={enableDesktopScroll ? { minHeight: `${sectionHeight}px` } : undefined}
     >
-      <div className="md:hidden">{renderTrack(false)}</div>
+      <div className="md:hidden">
+        <div className="px-6 mb-8">
+          <h2 className="text-3xl font-bold tracking-tight mb-2">Featured Projects</h2>
+          <p className="text-muted-foreground">Tap on a project to view details.</p>
+        </div>
+        {renderMobileList()}
+      </div>
       <div
         className={cn(
           "hidden md:flex items-center",
