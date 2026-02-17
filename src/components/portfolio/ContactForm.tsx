@@ -6,40 +6,57 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { Loader2 } from "lucide-react";
 
 export function ContactForm() {
   const [isPending, setIsPending] = useState(false);
-  const t = useTranslations('contact');
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
     setIsPending(true);
-    try {
-      // Add a minimum delay to show the loading state clearly
-      const [result] = await Promise.all([
-        sendMessage(formData),
-        new Promise(resolve => setTimeout(resolve, 500))
-      ]);
+    setErrors({});
 
-      if (result?.success) {
-        toast.success(t('messageSent'), { description: t('messageSentDesc') });
-        (document.getElementById("contact-form") as HTMLFormElement).reset();
+    const formDataToSend = new FormData(e.currentTarget);
+    const result = await sendMessage(formDataToSend);
+    setIsPending(false);
+
+    if (result.success) {
+      toast.success("Message sent!", { description: "I will get back to you soon." });
+      setFormData({ name: "", email: "", subject: "", message: "" }); // Reset form fields
+      setErrors({}); // Clear any remaining errors
+    } else {
+      if (result.details?.fieldErrors) {
+        setErrors(result.details.fieldErrors);
+        toast.error("Validation Error", { description: "Please check the highlighted fields." });
       } else {
-        toast.error(t('error'), { description: result?.error || "Something went wrong" });
+        toast.error("Error", { description: result.error });
       }
-    } catch (error) {
-      toast.error(t('error'), { description: "An unexpected error occurred" });
-    } finally {
-      setIsPending(false);
     }
   }
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Clear error for this field if it exists
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
   return (
-    <form id="contact-form" onSubmit={handleSubmit} className="space-y-4">
-      {/* Honeypot field for bots */}
+    <form onSubmit={handleSubmit} className="space-y-4">
       <input
         type="text"
         name="website"
@@ -48,62 +65,58 @@ export function ContactForm() {
         className="hidden"
         aria-hidden="true"
       />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Input
             name="name"
-            placeholder={t('yourName')}
+            placeholder="Your Name"
             required
-            disabled={isPending}
-            className="bg-background/50"
+            value={formData.name}
+            onChange={handleInputChange}
           />
+          {errors.name && <p className="text-sm text-destructive">{errors.name[0]}</p>}
         </div>
         <div className="space-y-2">
           <Input
             name="email"
             type="email"
-            placeholder={t('yourEmail')}
+            placeholder="Your Email"
             required
-            disabled={isPending}
-            className="bg-background/50"
+            value={formData.email}
+            onChange={handleInputChange}
           />
+          {errors.email && <p className="text-sm text-destructive">{errors.email[0]}</p>}
         </div>
       </div>
-
       <div className="space-y-2">
         <Input
           name="subject"
-          placeholder={t('subject')}
+          placeholder="Subject"
           required
-          disabled={isPending}
-          className="bg-background/50"
+          value={formData.subject}
+          onChange={handleInputChange}
         />
+        {errors.subject && <p className="text-sm text-destructive">{errors.subject[0]}</p>}
       </div>
-
       <div className="space-y-2">
         <Textarea
-          name="content"
-          placeholder={t('howCanIHelp')}
+          name="message"
+          placeholder="How can I help you?"
           rows={5}
           required
-          disabled={isPending}
-          className="bg-background/50 resize-none"
+          value={formData.message}
+          onChange={handleInputChange}
         />
+        {errors.message && <p className="text-sm text-destructive">{errors.message[0]}</p>}
       </div>
-
-      <Button
-        type="submit"
-        className="w-full transition-all"
-        disabled={isPending}
-      >
+      <Button type="submit" className="w-full" disabled={isPending}>
         {isPending ? (
-          <div className="flex items-center gap-2">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            {t('sending')}
-          </div>
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Sending...
+          </>
         ) : (
-          t('sendMessage')
+          "Send Message"
         )}
       </Button>
     </form>

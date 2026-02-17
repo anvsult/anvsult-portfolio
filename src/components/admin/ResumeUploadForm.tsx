@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
-import { Loader2, Upload, FileText, CheckCircle2 } from "lucide-react";
+import { Loader2, FileText, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateResume } from "@/app/[locale]/admin/resume/actions";
 import { useFormStatus } from "react-dom";

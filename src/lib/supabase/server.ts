@@ -16,8 +16,10 @@ export async function createClient() {
             // I added this try-catch block to handle potential errors when setting cookies
             // This is because the server component is allowed to read cookies but not set them
             // So by ignoring that error during rendering, the middleware will take care of setting cookies
-          } catch (error) {
-            console.error('Error setting cookies in Supabase client:', error)
+          } catch {
+            // The `setAll` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
           }
         },
       },

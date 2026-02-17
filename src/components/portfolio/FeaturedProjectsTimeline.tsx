@@ -4,9 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform, easeOut } from "framer-motion";
 import { Calendar, ExternalLink, Github } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import Image from "next/image";
 
 import { ProjectDetailsDialog } from "./ProjectDetailsDialog";
@@ -128,19 +126,19 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
   const renderTrack = (isScrollable: boolean) => (
     <div
       className={cn(
-        "relative h-[420px]",
+        "relative h-[850px]",
         isScrollable ? "overflow-visible" : "overflow-x-auto scroll-smooth",
       )}
     >
       <div className="absolute left-0 right-0 top-1/2 h-px bg-border/60" />
       <motion.div
-        className="absolute left-0 right-0 top-1/2 h-px origin-left bg-foreground/80"
+        className="absolute left-0 right-0 top-1/2 h-px origin-left bg-gradient-to-r from-primary/50 to-primary"
         style={{ scaleX: shouldReduceMotion ? 1 : drawProgress }}
       />
       <motion.div
         ref={trackRef}
         className={cn(
-          "flex h-full items-center gap-16 px-6",
+          "flex h-full items-center gap-12 px-6",
           isScrollable ? "" : "min-w-max",
         )}
         style={isScrollable ? { x } : undefined}
@@ -159,64 +157,108 @@ export function FeaturedProjectsTimeline({ projects, locale, className }: Featur
           return (
             <div
               key={project.id}
-              className="relative flex h-full min-w-[400px] max-w-[500px] flex-col items-center"
+              className="relative flex h-full min-w-[450px] max-w-[500px] flex-col"
             >
-              <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/80" />
-              <motion.article
-                {...motionProps}
-                onClick={() => setSelectedProject(project)}
-                className={cn(
-                  "w-full rounded-2xl border border-border/60 bg-background/70 p-5 shadow-sm backdrop-blur cursor-pointer hover:border-border/80 transition-colors",
-                  isAbove ? "mb-auto -translate-y-6" : "mt-auto translate-y-6",
-                )}
-              >
-                {/* Image Placeholder */}
-                <div className="w-full h-56 mb-4 bg-muted/30 rounded-lg flex items-center justify-center border border-border/50 relative overflow-hidden">
-                  {project.imageUrl ? (
-                    <Image
-                      src={project.imageUrl}
-                      alt={project.title}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider opacity-50">Project Image</span>
-                  )}
-                </div>
+              {/* Center Dot */}
+              <span className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-background z-10 shadow-sm" />
 
-                <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5" />
-                  <span>{formatRange(project, locale)}</span>
-                </div>
-                <h3 className="mt-3 text-lg font-semibold text-foreground">{project.title}</h3>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {project.techStack.map((tech) => (
-                    <Badge key={`${project.id}-${tech}`} variant="secondary" className="text-[10px]">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-                {(project.liveLink || project.githubLink) && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {project.liveLink && (
-                      <Button asChild size="sm" className="gap-2">
-                        <Link href={project.liveLink} target="_blank" rel="noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                          Live
-                        </Link>
-                      </Button>
-                    )}
-                    {project.githubLink && (
-                      <Button asChild variant="outline" size="sm" className="gap-2">
-                        <Link href={project.githubLink} target="_blank" rel="noreferrer">
-                          <Github className="h-4 w-4" />
-                          Code
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
+              {/* Top Half */}
+              <div className="flex h-1/2 w-full flex-col items-center justify-end pb-0">
+                {isAbove && (
+                  <>
+                    <motion.article
+                      {...motionProps}
+                      onClick={() => setSelectedProject(project)}
+                      className="group relative w-full rounded-2xl border border-border/60 bg-background/50 p-6 shadow-sm backdrop-blur-md cursor-pointer hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+                    >
+                      {/* Image Placeholder */}
+                      <div className="w-full h-64 mb-5 bg-muted/30 rounded-xl flex items-center justify-center border border-border/30 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500">
+                        {project.imageUrl ? (
+                          <Image
+                            src={project.imageUrl}
+                            alt={project.title}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span className="text-muted-foreground text-xs uppercase tracking-wider opacity-50">Project Image</span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground mb-2">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>{formatRange(project, locale)}</span>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{project.title}</h3>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.techStack.slice(0, 4).map((tech) => (
+                          <Badge key={`${project.id}-${tech}`} variant="outline" className="text-[10px] bg-background/50">
+                            {tech}
+                          </Badge>
+                        ))}
+                        {project.techStack.length > 4 && (
+                          <Badge variant="outline" className="text-[10px] bg-background/50">
+                            +{project.techStack.length - 4}
+                          </Badge>
+                        )}
+                      </div>
+                    </motion.article>
+                    {/* Connecting Line */}
+                    <div className="h-[calc(100%-0px)] w-px bg-gradient-to-b from-transparent via-border/60 to-primary/50 absolute bottom-0 left-1/2 -translate-x-1/2 -z-10 opacity-50" style={{ height: '3rem' }} />
+                    <div className="h-12 w-px bg-border/60 mt-0 shrink-0" />
+                  </>
                 )}
-              </motion.article>
+              </div>
+
+              {/* Bottom Half */}
+              <div className="flex h-1/2 w-full flex-col items-center justify-start pt-0">
+                {!isAbove && (
+                  <>
+                    <div className="h-12 w-px bg-border/60 mb-0 shrink-0" />
+                    <motion.article
+                      {...motionProps}
+                      onClick={() => setSelectedProject(project)}
+                      className="group relative w-full rounded-2xl border border-border/60 bg-background/50 p-6 shadow-sm backdrop-blur-md cursor-pointer hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+                    >
+                      {/* Image Placeholder */}
+                      <div className="w-full h-64 mb-5 bg-muted/30 rounded-xl flex items-center justify-center border border-border/30 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500">
+                        {project.imageUrl ? (
+                          <Image
+                            src={project.imageUrl}
+                            alt={project.title}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span className="text-muted-foreground text-xs uppercase tracking-wider opacity-50">Project Image</span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground mb-2">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>{formatRange(project, locale)}</span>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{project.title}</h3>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.techStack.slice(0, 4).map((tech) => (
+                          <Badge key={`${project.id}-${tech}`} variant="outline" className="text-[10px] bg-background/50">
+                            {tech}
+                          </Badge>
+                        ))}
+                        {project.techStack.length > 4 && (
+                          <Badge variant="outline" className="text-[10px] bg-background/50">
+                            +{project.techStack.length - 4}
+                          </Badge>
+                        )}
+                      </div>
+                    </motion.article>
+                  </>
+                )}
+              </div>
             </div>
           );
         })}

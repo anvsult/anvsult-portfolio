@@ -7,6 +7,7 @@ import * as Icons from "lucide-react";
 import { Pencil, Trash2 } from "lucide-react";
 import { AdminActionForm } from "@/components/admin/AdminActionForm";
 import { SearchParamsToast } from "@/components/admin/SearchParamsToast";
+
 import { getTranslations } from "next-intl/server";
 
 type LucideIconName = keyof typeof Icons;
@@ -58,8 +59,8 @@ export default async function HobbiesAdmin() {
                         <Pencil size={16} />
                       </Button>
                     }
-                    title={t('editHobby')}
-                    description={t('editHobbyDesc')}
+                    title="Edit Hobby"
+                    description="Update the hobby details and save."
                     initial={{
                       id: hobby.id,
                       nameEn: hobby.nameEn,
@@ -68,17 +69,17 @@ export default async function HobbiesAdmin() {
                       descriptionFr: hobby.descriptionFr,
                       iconName: hobby.iconName,
                     }}
-                    submitLabel={t('saveChanges')}
+                    submitLabel="Save Changes"
                   />
                   <AdminActionForm
                     action={deleteHobby.bind(null, hobby.id)}
                     variant="destructive"
                     size="icon"
-                    confirmTitle={t('deleteConfirmTitle')}
-                    confirmDescription={t('deleteConfirmDesc', { name: hobby.nameEn })}
-                    confirmLabel={t('deleteConfirmLabel')}
-                    pendingLabel={t('deletePending')}
-                    ariaLabel={t('ariaDelete', { name: hobby.nameEn })}
+                    confirmTitle="Delete hobby?"
+                    confirmDescription={`This will remove \"${hobby.nameEn}\" permanently.`}
+                    confirmLabel="Delete"
+                    pendingLabel="Deleting..."
+                    ariaLabel={`Delete ${hobby.nameEn}`}
                   >
                     <Trash2 size={16} />
                   </AdminActionForm>

@@ -1,24 +1,29 @@
 'use server'
 
 import { checkRateLimit } from "@/lib/rate-limit";
-import { sendMail } from "@/lib/mail";
+import { sendContactEmail } from "@/lib/mail"; // Changed from sendMail to sendContactEmail as per previous steps
 import { headers } from "next/headers";
+import { contactFormSchema } from "@/lib/schemas";
+import { getTranslations } from "next-intl/server";
 
 export async function sendMessage(formData: FormData) {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const subject = formData.get("subject") as string;
-  const content = formData.get("content") as string;
-  const website = formData.get("website") as string | null;
+  const t = await getTranslations('Contact');
 
-  if (website) {
-    // Honey pot trap
-    return { error: "Failed to send message. Please try again." };
+  const rawData = {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+    subject: formData.get("subject") as string,
+    message: formData.get("message") as string,
+  };
+
+  // Server-side validation
+  const validationResult = contactFormSchema.safeParse(rawData);
+
+  if (!validationResult.success) {
+    return { error: t('serverValidationError'), details: validationResult.error.flatten() };
   }
 
-  if (!name || !email || !content) {
-    return { error: "Please fill in all required fields." };
-  }
+  const { name, email, subject, message } = validationResult.data;
 
   // Rate limiting
   const ip = (await headers()).get("x-forwarded-for") || "unknown";
@@ -28,14 +33,15 @@ export async function sendMessage(formData: FormData) {
   }
 
   try {
-    const mailResult = await sendMail({ name, email, subject, content });
+    const mailResult = await sendContactEmail({ name, email, subject, message });
 
-    if (mailResult.error) {
+    if (mailResult?.error) {
       return { error: mailResult.error };
     }
 
     return { success: true };
   } catch (e) {
-    return { error: "Failed to send message. Please try again." };
+    console.error("Failed to submit contact form:", e);
+    return { error: t('sendingError') };
   }
 }

@@ -35,43 +35,15 @@ export function BottomNav({ locale }: BottomNavProps) {
   const isManualScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout>(null);
 
+  /* 
+   * Removed automatic scroll tracking as per user request.
+   * The bottom nav will now only update when clicked.
+   */
   useEffect(() => {
     if (window.location.hash) {
       setActiveId(window.location.hash.replace("#", ""));
     }
-
-    const sections = items
-      .map((item) => document.getElementById(item.id))
-      .filter((section): section is HTMLElement => Boolean(section));
-
-    if (sections.length === 0) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (isManualScrolling.current) return;
-
-        const visible = entries.filter((entry) => entry.isIntersecting);
-        if (visible.length === 0) {
-          return;
-        }
-
-        visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        setActiveId(visible[0].target.id);
-      },
-      {
-        rootMargin: "-40% 0px -50% 0px",
-        threshold: [0.1, 0.3, 0.6],
-      }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [items]);
+  }, []);
 
   const handleNavClick = (id: string) => {
     isManualScrolling.current = true;

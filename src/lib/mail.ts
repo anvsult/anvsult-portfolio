@@ -10,26 +10,26 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendMail(data: {
+export async function sendContactEmail(data: {
   name: string;
   email: string;
   subject: string;
-  content: string;
+  message: string;
 }) {
   const mailOptions = {
     from: `"${data.name}" <${process.env.SMTP_USER}>`, // Sender address
     to: process.env.CONTACT_EMAIL, // List of receivers
     replyTo: data.email,
-    subject: `New Contact Form Message: ${data.subject || 'No Subject'}`,
-    text: `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.content}`,
+    subject: `[Contact Form] ${data.subject}`,
+    text: `Name: ${data.name}\nEmail: ${data.email}\nSubject: ${data.subject}\n\nMessage:\n${data.message}`,
     html: `
       <h3>New Contact Form Message</h3>
       <p><strong>Name:</strong> ${data.name}</p>
       <p><strong>Email:</strong> ${data.email}</p>
-      <p><strong>Subject:</strong> ${data.subject || 'No Subject'}</p>
+      <p><strong>Subject:</strong> ${data.subject}</p>
       <br/>
       <p><strong>Message:</strong></p>
-      <p>${data.content.replace(/\n/g, '<br>')}</p>
+      <p>${data.message.replace(/\n/g, '<br>')}</p>
     `,
   };
 

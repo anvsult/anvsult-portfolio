@@ -34,7 +34,7 @@ export default async function LandingPage() {
           <FeaturedProjectsTimeline
             projects={projects.map((project) => ({
               id: project.id,
-              title: project.titleEn,
+              title: locale === 'en' ? project.titleEn : project.titleFr,
               techStack: project.techStack,
               projectStartDate: project.projectStartDate,
               projectEndDate: project.projectEndDate,

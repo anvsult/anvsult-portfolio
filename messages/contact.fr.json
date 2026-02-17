@@ -1,11 +1,13 @@
 {
-  "yourName": "Votre nom",
-  "yourEmail": "Votre e-mail",
-  "subject": "Sujet",
-  "howCanIHelp": "Comment puis-je vous aider ?",
+  "name": "Nom",
+  "namePlaceholder": "Votre nom complet",
+  "email": "E-mail",
+  "emailPlaceholder": "vous@exemple.com",
+  "message": "Message",
+  "messagePlaceholder": "Comment puis-je vous aider ?",
+  "submit": "Envoyer le message",
   "sending": "Envoi...",
-  "sendMessage": "Envoyer le message",
-  "messageSent": "Message envoyé !",
-  "messageSentDesc": "Je vous répondrai bientôt.",
-  "error": "Erreur"
+  "successTitle": "Message envoyé !",
+  "successDescription": "Je vous répondrai bientôt.",
+  "errorDescription": "Une erreur s'est produite. Veuillez réessayer plus tard."
 }

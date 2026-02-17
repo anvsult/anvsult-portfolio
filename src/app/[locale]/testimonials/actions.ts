@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { testimonialSchema } from "@/lib/schemas";
 
 export async function submitTestimonial(formData: FormData) {
   const authorName = formData.get("authorName") as string;
@@ -9,10 +10,22 @@ export async function submitTestimonial(formData: FormData) {
   const contentEn = formData.get("contentEn") as string;
   const website = formData.get("website") as string | null;
   if (website) return { error: "Something went wrong." };
-  // If they don't provide French, we default to English for both
-  const contentFr = (formData.get("contentFr") as string) || contentEn;
 
-  if (!authorName || !contentEn) return { error: "Required fields missing" };
+  const validationResult = testimonialSchema.safeParse({
+    authorName,
+    authorRole,
+    contentEn,
+    contentFr: formData.get("contentFr") as string || undefined,
+  });
+
+  if (!validationResult.success) {
+    return {
+      error: "Validation failed. Please check your input.",
+      fieldErrors: validationResult.error.flatten().fieldErrors,
+    };
+  }
+
+  const { contentFr } = validationResult.data;
 
   try {
     await prisma.testimonial.create({
@@ -20,7 +33,7 @@ export async function submitTestimonial(formData: FormData) {
         authorName,
         authorRole,
         contentEn,
-        contentFr,
+        contentFr: contentFr || contentEn,
         isApproved: false, // Ensures it goes to your Admin Moderation first!
       }
     });
