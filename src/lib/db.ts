@@ -4,10 +4,10 @@ import { Pool } from "pg";
 
 const connectionString = process.env.DIRECT_URL!;
 
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-
 const prismaClientSingleton = () => {
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaPg(pool);
+
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
